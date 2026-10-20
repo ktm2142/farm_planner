@@ -21,6 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-7mv56rz*#5e5^2&em+n^l(+vlz_@((0x&#$pu4)86@7tgo(9h3'
 
+AUTH_USER_MODEL = "accounts_app.CustomUser"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "crispy_forms",
     "crispy_bootstrap4",
+    "accounts_app",
     "harvest_app",
 ]
 
