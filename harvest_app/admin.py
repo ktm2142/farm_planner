@@ -9,9 +9,9 @@ class CropAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ["name", "area", "crop", "year"]
-    list_filter = ["crop", "year"]
-    search_fields = ["name"]
+    list_display = ["name", "area", "crop", "sowing_date"]
+    list_filter = ["crop"]
+    search_fields = ["name", "sowing_date__year"]
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
