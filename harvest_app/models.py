@@ -20,7 +20,7 @@ class Field(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    year = models.IntegerField()
+    year = models.DateField()
 
     class Meta:
         ordering = ["name"]
@@ -113,7 +113,7 @@ class Vehicle(models.Model):
 class Harvest(models.Model):
     STATUS_CHOICES = [
         ("scheduled", "Scheduled"),
-        ("in process", "In process"),
+        ("in_progress", "In progress"),
         ("completed", "Completed"),
     ]
     status = models.CharField(
