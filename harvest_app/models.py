@@ -124,11 +124,11 @@ class Harvest(models.Model):
     date = models.DateTimeField()
     field = models.ForeignKey(
         Field,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     storage = models.ForeignKey(
         Storage,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     vehicles = models.ManyToManyField(Vehicle, related_name="harvests")
 
