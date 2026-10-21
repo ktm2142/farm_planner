@@ -20,7 +20,7 @@ class Field(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    year = models.DateField()
+    sowing_date = models.DateField()
 
     class Meta:
         ordering = ["name"]
