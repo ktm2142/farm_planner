@@ -20,7 +20,6 @@ class Field(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    sowing_date = models.DateField()
 
     class Meta:
         ordering = ["name"]
@@ -130,7 +129,6 @@ class Harvest(models.Model):
         Storage,
         on_delete=models.PROTECT
     )
-    vehicles = models.ManyToManyField(Vehicle, related_name="harvests")
 
     class Meta:
         ordering = ["date"]

@@ -13,6 +13,7 @@ class FieldAdmin(admin.ModelAdmin):
     list_filter = ["crop"]
     search_fields = ["name", "sowing_date__year"]
 
+
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
     list_display = ["name", "capacity"]
