@@ -87,12 +87,6 @@ class Vehicle(models.Model):
         choices=VEHICLE_TYPE_CHOICES
     )
     model = models.CharField(max_length=255)
-    driver = models.ForeignKey(
-        Driver,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL
-    )
     load_capacity = models.IntegerField(
         blank=True,
         null=True,
