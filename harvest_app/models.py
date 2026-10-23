@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 
 
 class Crop(models.Model):
@@ -119,6 +119,11 @@ class Harvest(models.Model):
         Field,
         on_delete=models.PROTECT
     )
+    vehicles = models.ManyToManyField(
+        Vehicle,
+        through="HarvestVehicle",
+        related_name="harvests"
+    )
     storage = models.ForeignKey(
         Storage,
         on_delete=models.PROTECT
@@ -129,3 +134,69 @@ class Harvest(models.Model):
 
     def __str__(self):
         return f"{self.status} {self.date} {self.field}"
+
+    def save(self, *args, **kwargs):
+        if self.pk and self.status == "completed":
+            self.complete()
+            return
+        super().save(*args, **kwargs)
+
+    def complete(self):
+        vehicles = ", ".join(
+            f"{assignment.vehicle.license_plate} "
+            f"({assignment.driver.last_name})"
+            for assignment in self.assignments.select_related(
+                "vehicle",
+                "driver"
+            )
+        )
+        crop = self.field.crop.name if self.field.crop else "-"
+        with transaction.atomic():
+            HarvestArchive.objects.create(
+                date=self.date,
+                field_name=self.field.name,
+                crop_name=crop,
+                storage_name=self.storage.name,
+                vehicles_info=vehicles,
+            )
+            self.delete()
+
+
+class HarvestArchive(models.Model):
+    date = models.DateTimeField()
+    field_name = models.CharField(max_length=255)
+    crop_name = models.CharField(max_length=255)
+    storage_name = models.CharField(max_length=255)
+    vehicles_info = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["date"]
+
+    def __str__(self):
+        return f"Harvest from {self.date} on {self.field_name}"
+
+
+class HarvestVehicle(models.Model):
+    harvest = models.ForeignKey(
+        Harvest,
+        on_delete=models.CASCADE,
+        related_name="assignments"
+    )
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.PROTECT
+    )
+    driver = models.ForeignKey(
+        Driver,
+        on_delete=models.PROTECT
+    )
+    trailer = models.ForeignKey(
+        Trailer,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return f"{self.vehicle} - {self.driver}"

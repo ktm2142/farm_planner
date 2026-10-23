@@ -1,5 +1,5 @@
 from django.contrib import admin
-from harvest_app.models import Crop, Field, Storage, Driver, Trailer, Vehicle, Harvest
+from harvest_app.models import Crop, Field, Storage, Driver, Trailer, Vehicle, Harvest, HarvestVehicle, HarvestArchive
 
 
 @admin.register(Crop)
@@ -9,9 +9,9 @@ class CropAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ["name", "area", "crop", "sowing_date"]
+    list_display = ["name", "area", "crop"]
     list_filter = ["crop"]
-    search_fields = ["name", "sowing_date__year"]
+    search_fields = ["name"]
 
 
 @admin.register(Storage)
@@ -49,8 +49,21 @@ class VehicleAdmin(admin.ModelAdmin):
     search_fields = ["license_plate"]
 
 
+class HarvestVehicleInline(admin.TabularInline):
+    model = HarvestVehicle
+    extra = 1
+
+
 @admin.register(Harvest)
 class HarvestAdmin(admin.ModelAdmin):
     list_display = ["date", "status", "field"]
-    list_filter = ["date", "status"]
+    list_filter = ["status"]
     search_fields = ["field__name", "date__year"]
+    inlines = [HarvestVehicleInline]
+
+
+@admin.register(HarvestArchive)
+class HarvestArchiveAdmin(admin.ModelAdmin):
+    list_display = [
+        "date", "field_name", "created_at"
+    ]
