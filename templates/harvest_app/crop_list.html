@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if crop_list %}
+    	<ul>
+      {% for crop in crop_list %}
+      	<li>{{ crop.name }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}
