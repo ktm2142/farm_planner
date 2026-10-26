@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if vehicle_list %}
+    	<ul>
+      {% for vehicle in vehicle_list %}
+      	<li>{{ vehicle.name }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}
