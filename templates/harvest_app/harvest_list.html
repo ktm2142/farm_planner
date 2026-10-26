@@ -1,13 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if harvest_list %}
-    	<ul>
-      {% for harvest in harvest_list %}
-      	<li>{{ harvest.name }}</li>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for harvest in harvest_list %}
+          <li>{{ harvest.date }}</li>
+          <li>{{ harvest.get_status_display }}</li>
+          <li>{{ harvest.field }}</li>
+          <ul>
+            {% for assignment in harvest.assignments.all %}
+              <li>Vehicle: {{ assignment.vehicle.get_vehicle_type_display }}</li>
+              <li>Model: {{ assignment.vehicle.model }}</li>
+              <li>License plate: {{ assignment.vehicle.license_plate }}</li>
+              <li>Driver: {{ assignment.driver.last_name }}</li>
+              {% if assignment.trailer %}
+                <li>Trailer: {{ assignment.trailer.get_trailer_type_display }}</li>
+                <li>Trailer license plate: {{ assignment.trailer.license_plate }}</li>
+              {% endif %}
+              <hr>
+            {% endfor %}
+
+          </ul>
+          <hr>
+        {% endfor %}
 
       </ul>
     {% endif %}
