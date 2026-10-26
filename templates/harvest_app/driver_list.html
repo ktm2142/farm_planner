@@ -5,10 +5,10 @@
     {% if driver_list %}
     	<ul>
       {% for driver in driver_list %}
-      	<li>{{ driver.name }}</li>
+      	<li>{{ driver.last_name }}</li>
+      	<li>{{ driver.phone_number }}</li>
         <hr>
       {% endfor %}
-
       </ul>
     {% endif %}
   </div>
