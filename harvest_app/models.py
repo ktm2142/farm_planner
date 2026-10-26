@@ -14,12 +14,6 @@ class Crop(models.Model):
 class Field(models.Model):
     name = models.CharField(max_length=255)
     area = models.DecimalField(max_digits=7, decimal_places=2)
-    crop = models.ForeignKey(
-        Crop,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
 
     class Meta:
         ordering = ["name"]
@@ -119,6 +113,10 @@ class Harvest(models.Model):
         Field,
         on_delete=models.PROTECT
     )
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.PROTECT
+    )
     vehicles = models.ManyToManyField(
         Vehicle,
         through="HarvestVehicle",
@@ -133,7 +131,7 @@ class Harvest(models.Model):
         ordering = ["-start_date"]
 
     def __str__(self):
-        return f"{self.status} {self.date} {self.field}"
+        return f"{self.status} {self.start_date} {self.field}"
 
     def save(self, *args, **kwargs):
         if self.pk and self.status == "completed":
