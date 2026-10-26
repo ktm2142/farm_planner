@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.views.generic import ListView
+from harvest_app.models import Field
 
-# Create your views here.
+
+class FieldListView(ListView):
+    model = Field

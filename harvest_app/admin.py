@@ -56,7 +56,7 @@ class HarvestVehicleInline(admin.TabularInline):
 
 @admin.register(Harvest)
 class HarvestAdmin(admin.ModelAdmin):
-    list_display = ["date", "status", "field"]
+    list_display = ["field", "status", "date"]
     list_filter = ["status"]
     search_fields = ["field__name", "date__year"]
     inlines = [HarvestVehicleInline]

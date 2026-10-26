@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if field_list %}
+    	<ul>
+      {% for field in field_list %}
+      	<li>{{ field.name }}</li>
+      	<li>{{ field.area }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

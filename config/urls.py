@@ -15,8 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # EDIT THIS COMMENT: the reason of namespace="harvest_app" is because there's harvest url
+    path("", include("harvest_app.urls", namespace="harvest_app"))
 ]

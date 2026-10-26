@@ -1,3 +1,10 @@
 from django.test import TestCase
+from django.urls import reverse
 
-# Create your tests here.
+
+class TestFieldList(TestCase):
+    def test_field_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:field-list")
+        )
+        self.assertEqual(response.status_code, 200)
