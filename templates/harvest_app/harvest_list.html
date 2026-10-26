@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if harvest_list %}
+    	<ul>
+      {% for harvest in harvest_list %}
+      	<li>{{ harvest.name }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

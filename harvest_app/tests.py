@@ -48,3 +48,11 @@ class TestVehicleList(TestCase):
             reverse("harvest_app:vehicle-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestHarvestList(TestCase):
+    def test_harvest_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:harvest-list")
+        )
+        self.assertEqual(response.status_code, 200)
