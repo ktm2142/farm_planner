@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if vehicle_list %}
-    	<ul>
-      {% for vehicle in vehicle_list %}
-      	<li>{{ vehicle.name }}</li>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for vehicle in vehicle_list %}
+          <li>{{ vehicle.get_vehicle_type_display }}</li>
+          <li>{{ vehicle.model }}</li>
+          <li>{{ vehicle.license_plate }}</li>
+          {% if vehicle.load_capacity %}
+            {{ vehicle.load_capacity }} t.
+          {% endif %}
+          <hr>
+        {% endfor %}
 
       </ul>
     {% endif %}
