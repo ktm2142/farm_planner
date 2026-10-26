@@ -43,7 +43,7 @@ class Driver(models.Model):
     first_name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)
     phone_number = models.CharField(max_length=20)
-    hire_date = models.DateField(auto_now_add=True)
+    hire_date = models.DateField()
     professional_experience = models.IntegerField()
 
     class Meta:
@@ -114,7 +114,7 @@ class Harvest(models.Model):
         choices=STATUS_CHOICES,
         default="scheduled"
     )
-    date = models.DateTimeField()
+    start_date = models.DateTimeField()
     field = models.ForeignKey(
         Field,
         on_delete=models.PROTECT
@@ -130,7 +130,7 @@ class Harvest(models.Model):
     )
 
     class Meta:
-        ordering = ["-date"]
+        ordering = ["-start_date"]
 
     def __str__(self):
         return f"{self.status} {self.date} {self.field}"
@@ -153,7 +153,7 @@ class Harvest(models.Model):
         crop = self.field.crop.name if self.field.crop else "-"
         with transaction.atomic():
             HarvestArchive.objects.create(
-                date=self.date,
+                start_date=self.start_date,
                 field_name=self.field.name,
                 crop_name=crop,
                 storage_name=self.storage.name,
@@ -171,7 +171,7 @@ class HarvestArchive(models.Model):
     end_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["date"]
+        ordering = ["start_date"]
 
     def __str__(self):
         return f"Harvest from {self.date} on {self.field_name}"
