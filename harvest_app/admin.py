@@ -65,5 +65,5 @@ class HarvestAdmin(admin.ModelAdmin):
 @admin.register(HarvestArchive)
 class HarvestArchiveAdmin(admin.ModelAdmin):
     list_display = [
-        "start_date", "field_name", "end_date"
+        "start_date", "field_name"
     ]

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    {% if harvest_archive_list %}
+      <ul>
+        {% for harvest_archive in harvest_archive_list %}
+          <li>Field: {{ harvest_archive.field_name }}</li>
+          <li>Start date: {{ harvest_archive.start_date }}</li>
+          <li>End date: {{ harvest_archive.end_date }}</li>
+          <li>Crop name: {{ harvest_archive.crop_name }}</li>
+          <li>Vehicles: {{ harvest_archive.vehicles_info }}</li>
+
+          {#          <ul>#}
+          {#            {% for vehicle_info in harvest_archive.vehicles_info %}#}
+          {#              <li>#}
+          {#                {{ vehicle_info }}#}
+          {#              </li>#}
+          {#            {% endfor %}#}
+          {#          </ul>#}
+
+          <hr>
+        {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -56,3 +56,11 @@ class TestHarvestList(TestCase):
             reverse("harvest_app:harvest-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestHarvestArchiveList(TestCase):
+    def test_harvest_archive_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:harvest-archive-list")
+        )
+        self.assertEqual(response.status_code, 200)

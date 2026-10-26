@@ -148,12 +148,11 @@ class Harvest(models.Model):
                 "driver"
             )
         )
-        crop = self.field.crop.name if self.field.crop else "-"
         with transaction.atomic():
             HarvestArchive.objects.create(
                 start_date=self.start_date,
                 field_name=self.field.name,
-                crop_name=crop,
+                crop_name=self.crop,
                 storage_name=self.storage.name,
                 vehicles_info=vehicles,
             )
@@ -172,7 +171,8 @@ class HarvestArchive(models.Model):
         ordering = ["start_date"]
 
     def __str__(self):
-        return f"Harvest from {self.date} on {self.field_name}"
+        return (f"Harvest from {self.start_date} to "
+                f"{self.end_date} on {self.field_name}")
 
 
 class HarvestVehicle(models.Model):
