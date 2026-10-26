@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if storage_list %}
+    	<ul>
+      {% for storage in storage_list %}
+      	<li>{{ storage.name }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

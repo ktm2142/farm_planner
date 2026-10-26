@@ -16,3 +16,11 @@ class TestCropList(TestCase):
             reverse("harvest_app:crop-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestStorageList(TestCase):
+    def test_crop_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:storage-list")
+        )
+        self.assertEqual(response.status_code, 200)
