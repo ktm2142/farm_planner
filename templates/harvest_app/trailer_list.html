@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div>
+    {% if trailer_list %}
+    	<ul>
+      {% for trailer in trailer_list %}
+      	<li>{{ trailer.name }}</li>
+        <hr>
+      {% endfor %}
+
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

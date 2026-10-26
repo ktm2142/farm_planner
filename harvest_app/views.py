@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-from harvest_app.models import Field, Crop, Storage
+from harvest_app.models import Field, Crop, Storage, Driver, Trailer
 
 
 class FieldListView(ListView):
@@ -12,3 +12,11 @@ class CropListView(ListView):
 
 class StorageListView(ListView):
     model = Storage
+
+
+class DriverListView(ListView):
+    model = Driver
+
+
+class TrailerListView(ListView):
+    model = Trailer

@@ -19,8 +19,23 @@ class TestCropList(TestCase):
 
 
 class TestStorageList(TestCase):
-    def test_crop_list_response(self):
+    def test_storage_list_response(self):
         response = self.client.get(
             reverse("harvest_app:storage-list")
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+class TestDriverList(TestCase):
+    def test_driver_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:driver-list")
+        )
+        self.assertEqual(response.status_code, 200)
+
+class TestTrailerList(TestCase):
+    def test_trailer_list_response(self):
+        response = self.client.get(
+            reverse("harvest_app:trailer-list")
         )
         self.assertEqual(response.status_code, 200)
