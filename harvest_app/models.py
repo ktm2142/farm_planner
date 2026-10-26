@@ -163,12 +163,12 @@ class Harvest(models.Model):
 
 
 class HarvestArchive(models.Model):
-    date = models.DateTimeField()
+    start_date = models.DateTimeField()
     field_name = models.CharField(max_length=255)
     crop_name = models.CharField(max_length=255)
     storage_name = models.CharField(max_length=255)
     vehicles_info = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["date"]
