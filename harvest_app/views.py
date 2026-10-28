@@ -1,5 +1,17 @@
+from django.shortcuts import render
 from django.views.generic import ListView
 from harvest_app.models import Field, Crop, Storage, Driver, Trailer, Vehicle, Harvest, HarvestArchive
+
+
+def index(request):
+    num_visits = request.session.get("num_visits", 0)
+    request.session["num_visits"] = num_visits + 1
+
+    context = {
+        "num_visits": num_visits + 1
+    }
+
+    return render(request, "harvest_app/index.html", context=context)
 
 
 class FieldListView(ListView):
