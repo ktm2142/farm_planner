@@ -1,5 +1,5 @@
 """
-URL configuration for config project.
+URL configuration for config_app project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/6.1/topics/http/urls/
@@ -19,6 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # EDIT THIS COMMENT: the reason of namespace="harvest_app" is because there's harvest url
+    # TO DO: (edit this comment) the reason of namespace="harvest_app" is because there's harvest url
     path("", include("harvest_app.urls", namespace="harvest_app"))
 ]
