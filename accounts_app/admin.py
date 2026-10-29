@@ -1,3 +1,7 @@
+from accounts_app.models import CustomUser
 from django.contrib import admin
 
-# Register your models here.
+
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ["username"]

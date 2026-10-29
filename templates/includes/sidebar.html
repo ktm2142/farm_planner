@@ -1,4 +1,28 @@
 <ul>
+  {% if user.is_authenticated %}
+    <li>User: {{ user.get_username }}</li>
+    <li>
+      <form
+          action="{% url "logout" %}"
+          method="post"
+          style="display: inline;"
+      >
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+    </li>
+  {% else %}
+    <li>
+      <form
+          action="{% url "login" %}"
+          methot=post
+          style="display: inline;"
+      >
+        {% csrf_token %}
+        <button type="submit">Login</button>
+      </form>
+    </li>
+  {% endif %}
   <li><a href="{% url "harvest_app:harvest-list" %}">Current harvests</a></li>
   <li><a href="{% url "harvest_app:driver-list" %}">Drivers</a></li>
   <li><a href="{% url "harvest_app:vehicle-list" %}">Vehicles</a></li>

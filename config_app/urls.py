@@ -20,5 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     # TO DO: (edit this comment) the reason of namespace="harvest_app" is because there's harvest url
-    path("", include("harvest_app.urls", namespace="harvest_app"))
+    path("", include("harvest_app.urls", namespace="harvest_app")),
+    path("accounts/", include("accounts_app.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
