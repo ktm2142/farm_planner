@@ -5,9 +5,9 @@
     {% if harvest_list %}
       <ul>
         {% for harvest in harvest_list %}
-          <li>{{ harvest.date }}</li>
-          <li>{{ harvest.get_status_display }}</li>
-          <li>{{ harvest.field }}</li>
+          <li>Starting date: {{ harvest.start_date }}</li>
+          <li>Current status: {{ harvest.get_status_display }}</li>
+          <li>Field: {{ harvest.field }}</li>
           <ul>
             {% for assignment in harvest.assignments.all %}
               <li>Vehicle: {{ assignment.vehicle.get_vehicle_type_display }}</li>
