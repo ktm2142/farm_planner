@@ -5,7 +5,8 @@
     {% if trailer_list %}
     	<ul>
       {% for trailer in trailer_list %}
-      	<li>{{ trailer.name }}</li>
+      	<li>{{ trailer.trailer_type }}</li>
+      	<li>{{ trailer.license_plate }}</li>
         <hr>
       {% endfor %}
 
