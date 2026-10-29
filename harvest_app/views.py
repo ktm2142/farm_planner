@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-from harvest_app.models import Field, Crop, Storage, Driver, Trailer, Vehicle, Harvest, HarvestArchive
+from harvest_app.models import (
+    Field, Crop, Storage,
+    Driver, Trailer, Vehicle,
+    Harvest, HarvestArchive
+)
 
 
 def index(request):
