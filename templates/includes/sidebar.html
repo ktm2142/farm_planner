@@ -22,6 +22,17 @@
         <button type="submit">Login</button>
       </form>
     </li>
+    <li>
+      <form
+          action="{% url "registration" %}"
+          methot=post
+          style="display: inline;"
+      >
+        {% csrf_token %}
+        <button type="submit">Registration</button>
+      </form>
+    </li>
+
   {% endif %}
   <li><a href="{% url "harvest_app:harvest-list" %}">Current harvests</a></li>
   <li><a href="{% url "harvest_app:driver-list" %}">Drivers</a></li>
