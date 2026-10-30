@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from harvest_app.forms import FieldCreateForm, CropCreateForm
+from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -64,6 +64,32 @@ class TestStorageList(BaseAuthenticatedTestCase):
             reverse("harvest_app:storage-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestStorageCreate(BaseAuthenticatedTestCase):
+    def test_storage_create_form_is_valid(self):
+        form_data = {
+            "name": "Test Storage",
+            "capacity": 2500
+        }
+        form = StorageCreateForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_storage_create_form_is_not_valid(self):
+        form_data = {
+            "name": "Test Storage",
+            "capacity": -123
+        }
+        form = StorageCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_storage_create_form_capacity_is_0(self):
+        form_data = {
+            "name": "Test Storage",
+            "capacity": 0
+        }
+        form = StorageCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
 
 
 class TestDriverList(BaseAuthenticatedTestCase):

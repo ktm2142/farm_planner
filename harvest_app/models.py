@@ -24,7 +24,7 @@ class Field(models.Model):
 
 class Storage(models.Model):
     name = models.CharField(max_length=255)
-    capacity = models.IntegerField()
+    capacity = models.PositiveIntegerField()
 
     class Meta:
         ordering = ["-capacity"]
