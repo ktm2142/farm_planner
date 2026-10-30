@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView
 from harvest_app.models import (
@@ -18,35 +19,35 @@ def index(request):
     return render(request, "harvest_app/index.html", context=context)
 
 
-class FieldListView(ListView):
+class FieldListView(LoginRequiredMixin, ListView):
     model = Field
 
 
-class CropListView(ListView):
+class CropListView(LoginRequiredMixin, ListView):
     model = Crop
 
 
-class StorageListView(ListView):
+class StorageListView(LoginRequiredMixin, ListView):
     model = Storage
 
 
-class DriverListView(ListView):
+class DriverListView(LoginRequiredMixin, ListView):
     model = Driver
 
 
-class TrailerListView(ListView):
+class TrailerListView(LoginRequiredMixin, ListView):
     model = Trailer
 
 
-class VehicleListView(ListView):
+class VehicleListView(LoginRequiredMixin, ListView):
     model = Vehicle
 
 
-class HarvestListView(ListView):
+class HarvestListView(LoginRequiredMixin, ListView):
     model = Harvest
 
 
-class HarvestArchiveList(ListView):
+class HarvestArchiveList(LoginRequiredMixin, ListView):
     model = HarvestArchive
     context_object_name = "harvest_archive_list"
     template_name = "harvest_app/harvest_archive_list.html"
