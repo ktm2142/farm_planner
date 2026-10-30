@@ -16,7 +16,7 @@ class Field(models.Model):
     area = models.DecimalField(max_digits=7, decimal_places=2)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["area"]
 
     def __str__(self):
         return f"{self.name} x {self.area} ha"

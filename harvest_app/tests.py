@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from harvest_app.forms import FieldCreateForm
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -20,6 +21,24 @@ class TestFieldList(BaseAuthenticatedTestCase):
             reverse("harvest_app:field-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestFieldCreate(BaseAuthenticatedTestCase):
+    def test_field_create_form_is_valid(self):
+        form_data = {
+            "name": "Test Name",
+            "area": 12.34
+        }
+        form = FieldCreateForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_field_create_form_is_not_valid(self):
+        form_data = {
+            "name": "Test Name",
+            "area": 123456.78
+        }
+        form = FieldCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
 
 
 class TestCropList(BaseAuthenticatedTestCase):
