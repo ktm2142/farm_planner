@@ -1,8 +1,14 @@
 from django import forms
-from harvest_app.models import Field
+from harvest_app.models import Field, Crop
 
 
 class FieldCreateForm(forms.ModelForm):
     class Meta:
         model = Field
         fields = ("name", "area")
+
+
+class CropCreateForm(forms.ModelForm):
+    class Meta:
+        model = Crop
+        fields = ("name",)
