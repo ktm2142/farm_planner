@@ -1,27 +1,47 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from harvest_app.models import Field, Crop, Storage
+from harvest_app.models import Field, Crop, Storage, Driver
 
 
 class FieldCreateForm(forms.ModelForm):
     class Meta:
         model = Field
-        fields = ("name", "area")
+        fields = "__all__"
 
 
 class CropCreateForm(forms.ModelForm):
     class Meta:
         model = Crop
-        fields = ("name",)
+        fields = "__all__"
 
 
 class StorageCreateForm(forms.ModelForm):
+    capacity = forms.IntegerField(
+        min_value=1,
+        error_messages={
+            "min_value": "Capacity must be more than 0"
+        }
+    )
+
     class Meta:
         model = Storage
-        fields = ("name", "capacity")
+        fields = "__all__"
 
-    def clean_capacity(self):
-        capacity = self.cleaned_data.get("capacity")
-        if capacity == 0:
-            raise ValidationError("Capacity cannot be 0")
-        return capacity
+
+class DriverCreateForm(forms.ModelForm):
+    professional_experience = forms.IntegerField(
+        min_value=1,
+        error_messages={
+            "min_value": "Experience must be more than 0"
+        }
+    )
+
+    class Meta:
+        model = Driver
+        fields = "__all__"
+        widgets = {
+            "hire_date": forms.DateInput(
+                attrs={
+                    "type": "date"
+                }
+            )
+        }

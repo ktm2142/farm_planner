@@ -38,7 +38,7 @@ class Driver(models.Model):
     last_name = models.CharField(max_length=70)
     phone_number = models.CharField(max_length=20)
     hire_date = models.DateField()
-    professional_experience = models.IntegerField()
+    professional_experience = models.PositiveIntegerField()
 
     class Meta:
         verbose_name = "driver"

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm
+from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -98,6 +98,63 @@ class TestDriverList(BaseAuthenticatedTestCase):
             reverse("harvest_app:driver-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestDriverCreate(BaseAuthenticatedTestCase):
+    def test_driver_create_form_is_valid(self):
+        form_data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+1234567890",
+            "hire_date": "2026-01-18",
+            "professional_experience": 5,
+        }
+        form = DriverCreateForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_driver_create_form_invalid_hire_date(self):
+        form_data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+1234567890",
+            "hire_date": "01-18-2026",
+            "professional_experience": 5,
+        }
+        form = DriverCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_driver_create_form_invalid_phone_number(self):
+        form_data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+12345678901234567890",
+            "hire_date": "2026-01-18",
+            "professional_experience": 5,
+        }
+        form = DriverCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_driver_create_form_negative_experience(self):
+        form_data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+1234567890",
+            "hire_date": "2026-01-18",
+            "professional_experience": -1,
+        }
+        form = DriverCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_driver_create_form_experience_is_0(self):
+        form_data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+1234567890",
+            "hire_date": "2026-01-18",
+            "professional_experience": 0,
+        }
+        form = DriverCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
 
 
 class TestTrailerList(BaseAuthenticatedTestCase):

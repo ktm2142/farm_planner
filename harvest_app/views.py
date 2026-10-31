@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
-from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm
+from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm
 from harvest_app.models import (
     Field, Crop, Storage,
     Driver, Trailer, Vehicle,
@@ -53,6 +53,12 @@ class StorageCreateView(LoginRequiredMixin, CreateView):
 
 class DriverListView(LoginRequiredMixin, ListView):
     model = Driver
+
+
+class DriverCreateView(LoginRequiredMixin, CreateView):
+    model = Driver
+    form_class = DriverCreateForm
+    success_url = "/drivers"
 
 
 class TrailerListView(LoginRequiredMixin, ListView):
