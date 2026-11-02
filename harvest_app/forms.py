@@ -1,5 +1,5 @@
 from django import forms
-from harvest_app.models import Field, Crop, Storage, Driver
+from harvest_app.models import Field, Crop, Storage, Driver, Trailer
 
 
 class FieldCreateForm(forms.ModelForm):
@@ -15,26 +15,12 @@ class CropCreateForm(forms.ModelForm):
 
 
 class StorageCreateForm(forms.ModelForm):
-    capacity = forms.IntegerField(
-        min_value=1,
-        error_messages={
-            "min_value": "Capacity must be more than 0"
-        }
-    )
-
     class Meta:
         model = Storage
         fields = "__all__"
 
 
 class DriverCreateForm(forms.ModelForm):
-    professional_experience = forms.IntegerField(
-        min_value=1,
-        error_messages={
-            "min_value": "Experience must be more than 0"
-        }
-    )
-
     class Meta:
         model = Driver
         fields = "__all__"
@@ -45,3 +31,9 @@ class DriverCreateForm(forms.ModelForm):
                 }
             )
         }
+
+
+class TrailerCreateForm(forms.ModelForm):
+    class Meta:
+        model = Trailer
+        fields = "__all__"

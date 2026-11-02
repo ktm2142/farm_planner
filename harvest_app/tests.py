@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm
+from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm, TrailerCreateForm
+from harvest_app.models import Trailer
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -107,7 +108,7 @@ class TestDriverCreate(BaseAuthenticatedTestCase):
             "last_name": "Doe",
             "phone_number": "+1234567890",
             "hire_date": "2026-01-18",
-            "professional_experience": 5,
+            "professional_experience": 0,
         }
         form = DriverCreateForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -145,17 +146,6 @@ class TestDriverCreate(BaseAuthenticatedTestCase):
         form = DriverCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test_driver_create_form_experience_is_0(self):
-        form_data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone_number": "+1234567890",
-            "hire_date": "2026-01-18",
-            "professional_experience": 0,
-        }
-        form = DriverCreateForm(data=form_data)
-        self.assertFalse(form.is_valid())
-
 
 class TestTrailerList(BaseAuthenticatedTestCase):
     def test_trailer_list_response(self):
@@ -163,6 +153,59 @@ class TestTrailerList(BaseAuthenticatedTestCase):
             reverse("harvest_app:trailer-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestTrailerCreate(BaseAuthenticatedTestCase):
+    def test_trailer_create_form_is_valid(self):
+        form_data = {
+            "trailer_type": "grain_cart",
+            "capacity": 15,
+            "license_plate": "AB12345CD"
+        }
+        form = TrailerCreateForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_trailer_create_form_capacity_negative_number(self):
+        form_data = {
+            "trailer_type": "grain_cart",
+            "capacity": -12,
+            "license_plate": "AB12345CD"
+        }
+        form = TrailerCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_trailer_create_form_capacity_is_0(self):
+        form_data = {
+            "trailer_type": "grain_cart",
+            "capacity": 0,
+            "license_plate": "AB12345CD"
+        }
+        form = TrailerCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_trailer_create_form_capacity_more_than_24(self):
+        form_data = {
+            "trailer_type": "grain_cart",
+            "capacity": 25,
+            "license_plate": "AB12345CD"
+        }
+        form = TrailerCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_trailer_create_form_unique_license_plate(self):
+        Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=25,
+            license_plate="AB12345CD"
+        )
+        form_data = {
+            "trailer_type": "grain_cart",
+            "capacity": 25,
+            "license_plate": "AB12345CD"
+        }
+        form = TrailerCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("license_plate", form.errors)
 
 
 class TestVehicleList(BaseAuthenticatedTestCase):
