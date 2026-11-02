@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
 
 
@@ -24,7 +25,13 @@ class Field(models.Model):
 
 class Storage(models.Model):
     name = models.CharField(max_length=255)
-    capacity = models.PositiveIntegerField()
+    capacity = models.IntegerField(
+        validators=[
+            MinValueValidator(
+                1, "Minimum capacity must be more than 0"
+            ),
+        ]
+    )
 
     class Meta:
         ordering = ["-capacity"]
@@ -38,7 +45,14 @@ class Driver(models.Model):
     last_name = models.CharField(max_length=70)
     phone_number = models.CharField(max_length=20)
     hire_date = models.DateField()
-    professional_experience = models.PositiveIntegerField()
+    professional_experience = models.IntegerField(
+        validators=[
+            MinValueValidator(
+                -1,
+                "Professional experience cannot be negative"
+            )
+        ]
+    )
 
     class Meta:
         verbose_name = "driver"
@@ -60,7 +74,18 @@ class Trailer(models.Model):
         max_length=50,
         choices=TRAILER_TYPE_CHOICES
     )
-    capacity = models.IntegerField()
+    capacity = models.IntegerField(
+        validators=[
+            MinValueValidator(
+                1,
+                "Minimum capacity must be more than 0"
+            ),
+            MaxValueValidator(
+                24,
+                "Maximum capacity cannot be more than 24 tons"
+            )
+        ]
+    )
     license_plate = models.CharField(max_length=10, unique=True)
 
     class Meta:
@@ -84,6 +109,16 @@ class Vehicle(models.Model):
     load_capacity = models.IntegerField(
         blank=True,
         null=True,
+        validators=[
+            MinValueValidator(
+                1,
+                "Minimum capacity must be more than 0"
+            ),
+            MaxValueValidator(
+                40,
+                "Maximum capacity cannot be more than 40 tons"
+            )
+        ]
     )
     license_plate = models.CharField(max_length=10, unique=True)
 
