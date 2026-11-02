@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm, TrailerCreateForm
-from harvest_app.models import Trailer
+from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm, TrailerCreateForm, \
+    VehicleCreateForm
+from harvest_app.models import Trailer, Vehicle
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -214,6 +215,66 @@ class TestVehicleList(BaseAuthenticatedTestCase):
             reverse("harvest_app:vehicle-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestVehicleCreate(BaseAuthenticatedTestCase):
+    def test_vehicle_create_form_is_valid(self):
+        form_data = {
+            "vehicle_type": "tractor",
+            "model": "Test Model",
+            "capacity": 30,
+            "license_plate": "AB12345CD"
+        }
+        form = VehicleCreateForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_vehicle_create_form_0_capacity(self):
+        form_data = {
+            "vehicle_type": "tractor",
+            "model": "Test Model",
+            "load_capacity": 0,
+            "license_plate": "AB12345CD"
+        }
+        form = VehicleCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_vehicle_create_form_too_big_capacity(self):
+        form_data = {
+            "vehicle_type": "tractor",
+            "model": "Test Model",
+            "load_capacity": 50,
+            "license_plate": "AB12345CD"
+        }
+        form = VehicleCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_vehicle_create_form_combine_capacity(self):
+        form_data = {
+            "vehicle_type": "combine_harvester",
+            "model": "Test Model",
+            "load_capacity": 0,
+            "license_plate": "AB12345CD"
+        }
+        form = VehicleCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("load_capacity", form.errors)
+
+    def test_vehicle_create_form_unique_license_plate(self):
+        Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test Model",
+            load_capacity=25,
+            license_plate="AB12345CD"
+        )
+        form_data = {
+            "vehicle_type": "tractor",
+            "model": "Test Model",
+            "load_capacity": 25,
+            "license_plate": "AB12345CD"
+        }
+        form = VehicleCreateForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("license_plate", form.errors)
 
 
 class TestHarvestList(BaseAuthenticatedTestCase):

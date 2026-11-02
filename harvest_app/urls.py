@@ -1,7 +1,7 @@
 from django.urls import path
 from harvest_app.views import FieldListView, CropListView, StorageListView, DriverListView, TrailerListView, \
     VehicleListView, HarvestListView, HarvestArchiveList, index, FieldCreateView, CropCreateView, StorageCreateView, \
-    DriverCreateView, TrailerCreateView
+    DriverCreateView, TrailerCreateView, VehicleCreateView
 
 urlpatterns = [
     path("", index, name="index"),
@@ -16,6 +16,7 @@ urlpatterns = [
     path("trailers/", TrailerListView.as_view(), name="trailer-list"),
     path("trailers/create/", TrailerCreateView.as_view(), name="trailer-create"),
     path("vehicles/", VehicleListView.as_view(), name="vehicle-list"),
+    path("vehicles/create/", VehicleCreateView.as_view(), name="vehicle-create"),
     path("harvests/", HarvestListView.as_view(), name="harvest-list"),
     path(
         "harvests/archive/",
