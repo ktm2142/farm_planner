@@ -48,7 +48,7 @@ class Driver(models.Model):
     professional_experience = models.IntegerField(
         validators=[
             MinValueValidator(
-                -1,
+                0,
                 "Professional experience cannot be negative"
             )
         ]
