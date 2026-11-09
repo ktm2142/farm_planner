@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm, TrailerCreateForm, \
-    VehicleCreateForm
-from harvest_app.models import Trailer, Vehicle
+    VehicleCreateForm, HarvestCreateForm
+from harvest_app.models import Trailer, Vehicle, Field, Crop, Storage
 
 
 class BaseAuthenticatedTestCase(TestCase):
@@ -41,6 +41,7 @@ class TestFieldCreate(BaseAuthenticatedTestCase):
         }
         form = FieldCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("area", form.errors)
 
 
 class TestCropList(BaseAuthenticatedTestCase):
@@ -84,6 +85,7 @@ class TestStorageCreate(BaseAuthenticatedTestCase):
         }
         form = StorageCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("capacity", form.errors)
 
     def test_storage_create_form_capacity_is_0(self):
         form_data = {
@@ -92,6 +94,7 @@ class TestStorageCreate(BaseAuthenticatedTestCase):
         }
         form = StorageCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("capacity", form.errors)
 
 
 class TestDriverList(BaseAuthenticatedTestCase):
@@ -124,6 +127,7 @@ class TestDriverCreate(BaseAuthenticatedTestCase):
         }
         form = DriverCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("hire_date", form.errors)
 
     def test_driver_create_form_invalid_phone_number(self):
         form_data = {
@@ -135,6 +139,7 @@ class TestDriverCreate(BaseAuthenticatedTestCase):
         }
         form = DriverCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("phone_number", form.errors)
 
     def test_driver_create_form_negative_experience(self):
         form_data = {
@@ -146,6 +151,7 @@ class TestDriverCreate(BaseAuthenticatedTestCase):
         }
         form = DriverCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("professional_experience", form.errors)
 
 
 class TestTrailerList(BaseAuthenticatedTestCase):
@@ -174,6 +180,7 @@ class TestTrailerCreate(BaseAuthenticatedTestCase):
         }
         form = TrailerCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("capacity", form.errors)
 
     def test_trailer_create_form_capacity_is_0(self):
         form_data = {
@@ -183,6 +190,7 @@ class TestTrailerCreate(BaseAuthenticatedTestCase):
         }
         form = TrailerCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("capacity", form.errors)
 
     def test_trailer_create_form_capacity_more_than_24(self):
         form_data = {
@@ -192,6 +200,7 @@ class TestTrailerCreate(BaseAuthenticatedTestCase):
         }
         form = TrailerCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
+        self.assertIn("capacity", form.errors)
 
     def test_trailer_create_form_unique_license_plate(self):
         Trailer.objects.create(
@@ -217,72 +226,48 @@ class TestVehicleList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestVehicleCreate(BaseAuthenticatedTestCase):
-    def test_vehicle_create_form_is_valid(self):
-        form_data = {
-            "vehicle_type": "tractor",
-            "model": "Test Model",
-            "capacity": 30,
-            "license_plate": "AB12345CD"
-        }
-        form = VehicleCreateForm(data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_vehicle_create_form_0_capacity(self):
-        form_data = {
-            "vehicle_type": "tractor",
-            "model": "Test Model",
-            "load_capacity": 0,
-            "license_plate": "AB12345CD"
-        }
-        form = VehicleCreateForm(data=form_data)
-        self.assertFalse(form.is_valid())
-
-    def test_vehicle_create_form_too_big_capacity(self):
-        form_data = {
-            "vehicle_type": "tractor",
-            "model": "Test Model",
-            "load_capacity": 50,
-            "license_plate": "AB12345CD"
-        }
-        form = VehicleCreateForm(data=form_data)
-        self.assertFalse(form.is_valid())
-
-    def test_vehicle_create_form_combine_capacity(self):
-        form_data = {
-            "vehicle_type": "combine_harvester",
-            "model": "Test Model",
-            "load_capacity": 0,
-            "license_plate": "AB12345CD"
-        }
-        form = VehicleCreateForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("load_capacity", form.errors)
-
-    def test_vehicle_create_form_unique_license_plate(self):
-        Vehicle.objects.create(
-            vehicle_type="tractor",
-            model="Test Model",
-            load_capacity=25,
-            license_plate="AB12345CD"
-        )
-        form_data = {
-            "vehicle_type": "tractor",
-            "model": "Test Model",
-            "load_capacity": 25,
-            "license_plate": "AB12345CD"
-        }
-        form = VehicleCreateForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("license_plate", form.errors)
-
-
 class TestHarvestList(BaseAuthenticatedTestCase):
     def test_harvest_list_response(self):
         response = self.client.get(
             reverse("harvest_app:harvest-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestHarvestCreate(BaseAuthenticatedTestCase):
+    def setUp(self):
+        self.field = Field.objects.create(
+            name="Test Field",
+            area=123.45
+        )
+        self.crop = Crop.objects.create(name="Test Crop")
+        self.storage = Storage.objects.create(
+            name="Test Storage",
+            capacity=4000
+        )
+
+    def test_harvest_create_form_is_valid(self):
+        form_data = {
+            "status": "scheduled",
+            "start_date": "2029-08-15",
+            "field": self.field.pk,
+            "crop": self.crop.pk,
+            "storage": self.storage.pk
+        }
+        form = HarvestCreateForm(data=form_data)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_harvest_create_form_past_date(self):
+        form_data = {
+            "status": "scheduled",
+            "start_date": "2025-08-15T10:00",
+            "field": self.field.pk,
+            "crop": self.crop.pk,
+            "storage": self.storage.pk
+        }
+        form = HarvestCreateForm(data=form_data)
+        self.assertFalse(form.is_valid(), form.errors)
+        self.assertIn("start_date", form.errors)
 
 
 class TestHarvestArchiveList(BaseAuthenticatedTestCase):

@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
+from django.urls import reverse
 
 
 class Crop(models.Model):
@@ -168,6 +169,9 @@ class Harvest(models.Model):
     def __str__(self):
         return f"{self.status} {self.start_date} {self.field}"
 
+    def get_absolute_url(self):
+        return reverse("harvest_app:harvest-detail", kwargs={"pk": self.pk})
+
     def save(self, *args, **kwargs):
         if self.pk and self.status == "completed":
             self.complete()
@@ -194,22 +198,6 @@ class Harvest(models.Model):
             self.delete()
 
 
-class HarvestArchive(models.Model):
-    start_date = models.DateTimeField()
-    field_name = models.CharField(max_length=255)
-    crop_name = models.CharField(max_length=255)
-    storage_name = models.CharField(max_length=255)
-    vehicles_info = models.TextField()
-    end_date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["start_date"]
-
-    def __str__(self):
-        return (f"Harvest from {self.start_date} to "
-                f"{self.end_date} on {self.field_name}")
-
-
 class HarvestVehicle(models.Model):
     harvest = models.ForeignKey(
         Harvest,
@@ -233,3 +221,19 @@ class HarvestVehicle(models.Model):
 
     def __str__(self):
         return f"{self.vehicle} - {self.driver}"
+
+
+class HarvestArchive(models.Model):
+    start_date = models.DateTimeField()
+    field_name = models.CharField(max_length=255)
+    crop_name = models.CharField(max_length=255)
+    storage_name = models.CharField(max_length=255)
+    vehicles_info = models.TextField()
+    end_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["start_date"]
+
+    def __str__(self):
+        return (f"Harvest from {self.start_date} to "
+                f"{self.end_date} on {self.field_name}")

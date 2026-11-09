@@ -1,13 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-from harvest_app.forms import FieldCreateForm, CropCreateForm, StorageCreateForm, DriverCreateForm, TrailerCreateForm, \
-    VehicleCreateForm
+from harvest_app.forms import (
+    FieldCreateForm, CropCreateForm, StorageCreateForm,
+    DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
+    HarvestCreateForm, HarvestVehicleCreateForm
+)
 from harvest_app.models import (
     Field, Crop, Storage,
     Driver, Trailer, Vehicle,
-    Harvest, HarvestArchive
+    Harvest, HarvestArchive, HarvestVehicle
 )
 
 
@@ -83,6 +88,15 @@ class VehicleCreateView(LoginRequiredMixin, CreateView):
 
 
 class HarvestListView(LoginRequiredMixin, ListView):
+    model = Harvest
+
+
+class HarvestCreateView(LoginRequiredMixin, CreateView):
+    model = Harvest
+    form_class = HarvestCreateForm
+
+
+class HarvestDetailView(LoginRequiredMixin, DetailView):
     model = Harvest
 
 

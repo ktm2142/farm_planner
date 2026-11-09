@@ -1,7 +1,8 @@
 from django import forms
+from django.utils import timezone
 from harvest_app.models import (
     Field, Crop, Storage,
-    Driver, Trailer, Vehicle
+    Driver, Trailer, Vehicle, Harvest, HarvestVehicle
 )
 
 
@@ -55,5 +56,39 @@ class VehicleCreateForm(forms.ModelForm):
             self.add_error(
                 "load_capacity",
                 "Only tractor and truck can have load capacity."
+            )
+        return cleaned_data
+
+
+class HarvestCreateForm(forms.ModelForm):
+    class Meta:
+        model = Harvest
+        fields = [
+            "status",
+            "start_date",
+            "field",
+            "crop",
+            "storage"
+        ]
+        widgets = {
+            "start_date": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            )
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data.get("status")
+        start_date = cleaned_data.get("start_date")
+        if status == "completed":
+            self.add_error(
+                "status",
+                "Completed harvest cannot be created."
+            )
+        if start_date < timezone.now():
+            self.add_error(
+                "start_date",
+                "You cannot create harvest in passed dates."
             )
         return cleaned_data

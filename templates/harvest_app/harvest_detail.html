@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>{{ harvest.field }} {{ harvest.crop }}</h1>
+  <p>Status: {{ harvest.status }}</p>
+  <p>Storage: {{ harvest.storage }}</p>
+
+  <h3>Vehicles</h3>
+  <ul>
+    {% for assignment in harvest.assignments.all %}
+      <li>
+        {{ assignment.vehicle }} - {{ assignment.driver.last_name }}
+        {% if assignment.trailer %}
+          {{ assignment.trailer }}
+        {% endif %}
+      </li>
+    {% empty %}
+      <p>No vehicles yet</p>
+    {% endfor %}
+  </ul>
+  <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}">Add vehicle</a>
+{% endblock %}
