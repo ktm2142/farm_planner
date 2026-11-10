@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -98,6 +99,30 @@ class HarvestCreateView(LoginRequiredMixin, CreateView):
 
 class HarvestDetailView(LoginRequiredMixin, DetailView):
     model = Harvest
+
+
+class HarvestVehicleCreateView(LoginRequiredMixin, CreateView):
+    model = HarvestVehicle
+    form_class = HarvestVehicleCreateForm
+    template_name = "harvest_app/harvest_vehicle_form.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["harvest"] = get_object_or_404(
+            Harvest, pk=self.kwargs["pk"]
+        )
+        return kwargs
+
+    # this method is for adding one or more vehicles to harvest
+    def form_valid(self, form):
+        form.save()
+        action = self.request.POST.get("action")
+        if action == "save_and_add":
+            return redirect(self.request.path)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse("harvest_app:harvest-detail", args=[self.kwargs["pk"]])
 
 
 class HarvestArchiveList(LoginRequiredMixin, ListView):

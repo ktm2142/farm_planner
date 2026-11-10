@@ -25,7 +25,10 @@ urlpatterns = [
     path("harvests/", HarvestListView.as_view(), name="harvest-list"),
     path("harvests/create/", HarvestCreateView.as_view(), name="harvest-create"),
     path("harvests/<int:pk>/", HarvestDetailView.as_view(), name="harvest-detail"),
-
+    path(
+        "harvests/<int:pk>/add-vehicle/",
+        HarvestVehicleCreateView.as_view(),
+        name="harvest-add-vehicle"),
     path(
         "harvests/archive/",
         HarvestArchiveList.as_view(),

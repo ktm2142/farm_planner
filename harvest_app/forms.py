@@ -92,3 +92,53 @@ class HarvestCreateForm(forms.ModelForm):
                 "You cannot create harvest in passed dates."
             )
         return cleaned_data
+
+
+class HarvestVehicleCreateForm(forms.ModelForm):
+    class Meta:
+        model = HarvestVehicle
+        fields = ["vehicle", "driver", "trailer"]
+
+    def __init__(self, *args, **kwargs):
+        self.harvest = kwargs.pop("harvest", None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        vehicle = cleaned_data.get("vehicle")
+        driver = cleaned_data.get("driver")
+        trailer = cleaned_data.get("trailer")
+
+        if self.harvest:
+            if vehicle and HarvestVehicle.objects.filter(
+                    harvest=self.harvest,
+                    vehicle=vehicle
+            ).exists():
+                self.add_error("vehicle", "This vehicle is already in this harvest.")
+
+            if driver and HarvestVehicle.objects.filter(
+                    harvest=self.harvest,
+                    driver=driver
+            ).exists():
+                self.add_error("driver", "This driver is already in this harvest.")
+
+            if trailer and HarvestVehicle.objects.filter(
+                    harvest=self.harvest,
+                    trailer=trailer
+            ).exists():
+                self.add_error("trailer", "This trailer is already in this harvest.")
+
+            if vehicle.vehicle_type == "combine_harvester" and trailer:
+                self.add_error("trailer", "Trailer cannot be attached to combine harvester")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if self.harvest:
+            instance.harvest = self.harvest
+        if commit:
+            instance.save()
+
+        return instance
