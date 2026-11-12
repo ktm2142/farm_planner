@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.template.base import kwarg_re
 from django.test import TestCase
 from django.urls import reverse
 from harvest_app.forms import (
@@ -8,7 +9,7 @@ from harvest_app.forms import (
 )
 from harvest_app.models import (
     Trailer, Vehicle, Field, Crop,
-    Storage, HarvestVehicle, Harvest, Driver
+    Storage, HarvestVehicle, Harvest, Driver, HarvestArchive
 )
 
 
@@ -31,7 +32,7 @@ class TestFieldList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestFieldCreate(BaseAuthenticatedTestCase):
+class TestFieldCreate(TestCase):
     def test_field_create_form_is_valid(self):
         form_data = {
             "name": "Test Name",
@@ -58,7 +59,7 @@ class TestCropList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestCropCreate(BaseAuthenticatedTestCase):
+class TestCropCreate(TestCase):
     def test_crop_create_form(self):
         form_data = {
             "name": "Test Crop",
@@ -75,7 +76,7 @@ class TestStorageList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestStorageCreate(BaseAuthenticatedTestCase):
+class TestStorageCreate(TestCase):
     def test_storage_create_form_is_valid(self):
         form_data = {
             "name": "Test Storage",
@@ -111,7 +112,7 @@ class TestDriverList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestDriverCreate(BaseAuthenticatedTestCase):
+class TestDriverCreate(TestCase):
     def test_driver_create_form_is_valid(self):
         form_data = {
             "first_name": "John",
@@ -168,7 +169,7 @@ class TestTrailerList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestTrailerCreate(BaseAuthenticatedTestCase):
+class TestTrailerCreate(TestCase):
     def test_trailer_create_form_is_valid(self):
         form_data = {
             "trailer_type": "grain_cart",
@@ -232,7 +233,7 @@ class TestVehicleList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestVehicleCreate(BaseAuthenticatedTestCase):
+class TestVehicleCreate(TestCase):
     def test_vehicle_create_form_is_valid(self):
         form_data = {
             "vehicle_type": "tractor",
@@ -302,7 +303,7 @@ class TestHarvestList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestHarvestCreate(BaseAuthenticatedTestCase):
+class TestHarvestCreate(TestCase):
     def setUp(self):
         self.field = Field.objects.create(
             name="Test Field",
@@ -338,7 +339,7 @@ class TestHarvestCreate(BaseAuthenticatedTestCase):
         self.assertIn("start_date", form.errors)
 
 
-class TestHarvestVehicleCreate(BaseAuthenticatedTestCase):
+class TestHarvestVehicleCreate(TestCase):
     def setUp(self):
         self.vehicle = Vehicle.objects.create(
             vehicle_type="tractor",
@@ -435,7 +436,7 @@ class TestHarvestArchiveList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestHarvestArchiveCreateForm(BaseAuthenticatedTestCase):
+class TestHarvestArchiveCreateForm(TestCase):
     def test_harvest_archive_form_is_valid(self):
         form = HarvestArchiveCreateForm(data={"tons_harvested": 5000})
         self.assertTrue(form.is_valid())
@@ -443,3 +444,81 @@ class TestHarvestArchiveCreateForm(BaseAuthenticatedTestCase):
     def test_harvest_archive_form_is_not_valid(self):
         form = HarvestArchiveCreateForm(data={"tons_harvested": 0})
         self.assertFalse(form.is_valid())
+
+
+class TestHarvestArchiveCreateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.vehicle_1 = Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test tractor",
+            load_capacity=30,
+            license_plate="CV7894LO"
+        )
+        self.driver_1 = Driver.objects.create(
+            first_name="John",
+            last_name="Doe",
+            phone_number="+1234567890",
+            hire_date="2026-01-18",
+            professional_experience=0,
+        )
+        self.vehicle_2 = Vehicle.objects.create(
+            vehicle_type="combine_harvester",
+            model="Test harvester",
+            license_plate="AS1236YH"
+        )
+        self.driver_2 = Driver.objects.create(
+            first_name="Isaac",
+            last_name="Clarke",
+            phone_number="+55575790432",
+            hire_date="2021-09-22",
+            professional_experience=5,
+        )
+        self.trailer = Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=20,
+            license_plate="JK298P"
+        )
+        self.field = Field.objects.create(
+            name="Test Field",
+            area=123.45
+        )
+        self.crop = Crop.objects.create(name="Test Crop")
+        self.storage = Storage.objects.create(
+            name="Test Storage",
+            capacity=4000
+        )
+        self.harvest = Harvest.objects.create(
+            status="scheduled",
+            start_date="2027-07-08 08:00:00",
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage
+        )
+        self.harvest_vehicle_1 = HarvestVehicle.objects.create(
+            harvest=self.harvest,
+            vehicle=self.vehicle_1,
+            driver=self.driver_1,
+            trailer=self.trailer
+        )
+        self.harvest_vehicle_2 = HarvestVehicle.objects.create(
+            harvest=self.harvest,
+            vehicle=self.vehicle_2,
+            driver=self.driver_2,
+        )
+        self.url = reverse(
+            "harvest_app:add-to-archive",
+            kwargs={"pk": self.harvest.pk}
+        )
+
+    def test_harvest_archive_created_harvest_deleted(self):
+        response = self.client.post(self.url, {"tons_harvested": 1000})
+        self.assertEqual(HarvestArchive.objects.count(), 1)
+        self.assertFalse(Harvest.objects.filter(pk=self.harvest.pk).exists())
+        self.assertEqual(response.status_code, 302)
+
+    def test_invalid_tons_harvest_not_deleted(self):
+        response = self.client.post(self.url, {"tons_harvested": 0})
+        self.assertEqual(HarvestArchive.objects.count(), 0)
+        self.assertTrue(Harvest.objects.filter(pk=self.harvest.pk).exists())
+        self.assertEqual(response.status_code, 200)
