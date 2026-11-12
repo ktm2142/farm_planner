@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>Complete Harvest on <strong>{{ harvest.field }}</strong></h1>
+  <p>Crop: {{ harvest.crop }}</p>
+  <p>Status: {{ harvest.status }}</p>
+  <p>Storage: {{ harvest.storage }}</p>
+
+   <form action="" method="post" novalidate>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Complete harvest</button>
+  </form>
+
+  <h3>Vehicles</h3>
+  <ul>
+    {% for assignment in harvest.assignments.all %}
+      <li>
+        {{ assignment.vehicle }} - {{ assignment.driver.last_name }}
+        {% if assignment.trailer %}
+          {{ assignment.trailer }}
+        {% endif %}
+      </li>
+    {% empty %}
+      <p>No vehicles yet</p>
+    {% endfor %}
+  </ul>
+  <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}">Add vehicle</a>
+{% endblock %}

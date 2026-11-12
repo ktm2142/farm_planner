@@ -3,7 +3,7 @@
 
 {% block content %}
   <h1>{{ harvest.field }} {{ harvest.crop }}</h1>
-  <p>Status: {{ harvest.status }}</p>
+  <p>Status: {{ harvest.get_status_display }}</p>
   <p>Storage: {{ harvest.storage }}</p>
 
   <h3>Vehicles</h3>
@@ -20,4 +20,5 @@
     {% endfor %}
   </ul>
   <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}">Add vehicle</a>
+  <a href="{% url "harvest_app:add-to-archive" harvest.pk %}">Complete harvest</a>
 {% endblock %}
