@@ -1,5 +1,5 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models, transaction
+from django.db import models
 from django.urls import reverse
 
 
@@ -172,31 +172,6 @@ class Harvest(models.Model):
     def get_absolute_url(self):
         return reverse("harvest_app:harvest-detail", kwargs={"pk": self.pk})
 
-    def save(self, *args, **kwargs):
-        if self.pk and self.status == "completed":
-            self.complete()
-            return
-        super().save(*args, **kwargs)
-
-    def complete(self):
-        vehicles = ", ".join(
-            f"{assignment.vehicle.license_plate} "
-            f"({assignment.driver.last_name})"
-            for assignment in self.assignments.select_related(
-                "vehicle",
-                "driver"
-            )
-        )
-        with transaction.atomic():
-            HarvestArchive.objects.create(
-                start_date=self.start_date,
-                field_name=self.field.name,
-                crop_name=self.crop,
-                storage_name=self.storage.name,
-                vehicles_info=vehicles,
-            )
-            self.delete()
-
 
 class HarvestVehicle(models.Model):
     harvest = models.ForeignKey(
@@ -230,6 +205,12 @@ class HarvestArchive(models.Model):
     storage_name = models.CharField(max_length=255)
     vehicles_info = models.TextField()
     end_date = models.DateTimeField(auto_now_add=True)
+    tons_harvested = models.IntegerField(validators=[
+        MinValueValidator(
+            1,
+            "Amount of harvested tons cannot be less then 1"
+        )
+    ])
 
     class Meta:
         ordering = ["start_date"]

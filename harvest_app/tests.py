@@ -4,7 +4,7 @@ from django.urls import reverse
 from harvest_app.forms import (
     FieldCreateForm, CropCreateForm, StorageCreateForm,
     DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
-    HarvestCreateForm, HarvestVehicleCreateForm
+    HarvestCreateForm, HarvestVehicleCreateForm, HarvestArchiveCreateForm
 )
 from harvest_app.models import (
     Trailer, Vehicle, Field, Crop,
@@ -433,3 +433,13 @@ class TestHarvestArchiveList(BaseAuthenticatedTestCase):
             reverse("harvest_app:harvest-archive-list")
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestHarvestArchiveCreateForm(BaseAuthenticatedTestCase):
+    def test_harvest_archive_form_is_valid(self):
+        form = HarvestArchiveCreateForm(data={"tons_harvested": 5000})
+        self.assertTrue(form.is_valid())
+
+    def test_harvest_archive_form_is_not_valid(self):
+        form = HarvestArchiveCreateForm(data={"tons_harvested": 0})
+        self.assertFalse(form.is_valid())

@@ -1,14 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from harvest_app.forms import (
     FieldCreateForm, CropCreateForm, StorageCreateForm,
     DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
-    HarvestCreateForm, HarvestVehicleCreateForm
+    HarvestCreateForm, HarvestVehicleCreateForm, HarvestArchiveCreateForm
 )
 from harvest_app.models import (
     Field, Crop, Storage,
@@ -129,3 +130,39 @@ class HarvestArchiveList(LoginRequiredMixin, ListView):
     model = HarvestArchive
     context_object_name = "harvest_archive_list"
     template_name = "harvest_app/harvest_archive_list.html"
+
+
+class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
+    model = HarvestArchive
+    form_class = HarvestArchiveCreateForm
+    template_name = "harvest_app/harvest_archive_form.html"
+    success_url = "/harvests/archive"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.harvest = get_object_or_404(Harvest, pk=kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["harvest"] = self.harvest
+        return context
+
+    def form_valid(self, form):
+        harvest = self.harvest
+        vehicles = ", ".join(
+            f"{assignment.vehicle.license_plate} "
+            f"({assignment.driver.last_name})"
+            for assignment in harvest.assignments.select_related(
+                "vehicle",
+                "driver"
+            )
+        )
+        form.instance.start_date = harvest.start_date
+        form.instance.field_name = harvest.field.name
+        form.instance.crop_name = harvest.crop.name
+        form.instance.storage_name = harvest.storage.name
+        form.instance.vehicles_info = vehicles
+        with transaction.atomic():
+            response = super().form_valid(form)
+            harvest.delete()
+        return response

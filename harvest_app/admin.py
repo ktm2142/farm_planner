@@ -1,5 +1,8 @@
 from django.contrib import admin
-from harvest_app.models import Crop, Field, Storage, Driver, Trailer, Vehicle, Harvest, HarvestVehicle, HarvestArchive
+from harvest_app.models import (
+    Crop, Field, Storage, Driver, Trailer,
+    Vehicle, Harvest, HarvestVehicle, HarvestArchive
+)
 
 
 @admin.register(Crop)
@@ -60,10 +63,15 @@ class HarvestAdmin(admin.ModelAdmin):
     list_filter = ["status", "crop"]
     search_fields = ["field__name"]
     inlines = [HarvestVehicleInline]
+    # status is changed only via the user interface,
+    # because completing a harvest also creates a HarvestArchive record
+    readonly_fields = ["status"]
 
 
 @admin.register(HarvestArchive)
 class HarvestArchiveAdmin(admin.ModelAdmin):
     list_display = [
-        "start_date", "field_name"
+        "id",
+        "start_date",
+        "field_name"
     ]

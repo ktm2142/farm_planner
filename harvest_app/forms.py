@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from harvest_app.models import (
     Field, Crop, Storage,
-    Driver, Trailer, Vehicle, Harvest, HarvestVehicle
+    Driver, Trailer, Vehicle, Harvest, HarvestVehicle, HarvestArchive
 )
 
 
@@ -142,3 +142,9 @@ class HarvestVehicleCreateForm(forms.ModelForm):
             instance.save()
 
         return instance
+
+
+class HarvestArchiveCreateForm(forms.ModelForm):
+    class Meta:
+        model = HarvestArchive
+        fields = ["tons_harvested"]

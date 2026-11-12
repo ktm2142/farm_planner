@@ -5,7 +5,7 @@ from harvest_app.views import (
     HarvestListView, HarvestArchiveList, index,
     FieldCreateView, CropCreateView, StorageCreateView,
     DriverCreateView, TrailerCreateView, VehicleCreateView, HarvestCreateView, HarvestDetailView,
-    HarvestVehicleCreateView
+    HarvestVehicleCreateView, HarvestArchiveCreateView
 )
 
 urlpatterns = [
@@ -33,6 +33,11 @@ urlpatterns = [
         "harvests/archive/",
         HarvestArchiveList.as_view(),
         name="harvest-archive-list"
+    ),
+    path(
+        "harvests/<int:pk>/add-to-archive/",
+        HarvestArchiveCreateView.as_view(),
+        name="add-to-archive"
     ),
 ]
 
