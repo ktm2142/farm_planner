@@ -90,7 +90,14 @@ class VehicleCreateView(LoginRequiredMixin, CreateView):
 
 
 class HarvestListView(LoginRequiredMixin, ListView):
-    model = Harvest
+    def get_queryset(self):
+        return Harvest.objects.select_related(
+            "crop", "field", "storage"
+        ).prefetch_related(
+            "assignments__driver",
+            "assignments__vehicle",
+            "assignments__trailer"
+        )
 
 
 class HarvestCreateView(LoginRequiredMixin, CreateView):
@@ -99,7 +106,14 @@ class HarvestCreateView(LoginRequiredMixin, CreateView):
 
 
 class HarvestDetailView(LoginRequiredMixin, DetailView):
-    model = Harvest
+    def get_queryset(self):
+        return Harvest.objects.select_related(
+            "crop", "field", "storage"
+        ).prefetch_related(
+            "assignments__driver",
+            "assignments__vehicle",
+            "assignments__trailer"
+        )
 
 
 class HarvestVehicleCreateView(LoginRequiredMixin, CreateView):
@@ -133,13 +147,21 @@ class HarvestArchiveList(LoginRequiredMixin, ListView):
 
 
 class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
-    model = HarvestArchive
     form_class = HarvestArchiveCreateForm
     template_name = "harvest_app/harvest_archive_form.html"
     success_url = "/harvests/archive"
 
     def dispatch(self, request, *args, **kwargs):
-        self.harvest = get_object_or_404(Harvest, pk=kwargs["pk"])
+        self.harvest = get_object_or_404(
+            Harvest.objects.select_related(
+                "crop", "field", "storage"
+            ).prefetch_related(
+                "assignments__driver",
+                "assignments__vehicle",
+                "assignments__trailer"
+            ),
+            pk=kwargs["pk"]
+        )
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -152,10 +174,7 @@ class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
         vehicles = ", ".join(
             f"{assignment.vehicle.license_plate} "
             f"({assignment.driver.last_name})"
-            for assignment in harvest.assignments.select_related(
-                "vehicle",
-                "driver"
-            )
+            for assignment in harvest.assignments.all()
         )
         form.instance.start_date = harvest.start_date
         form.instance.field_name = harvest.field.name
