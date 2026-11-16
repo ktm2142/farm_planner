@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.template.base import kwarg_re
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from harvest_app.forms import (
     FieldCreateForm, CropCreateForm, StorageCreateForm,
     DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
@@ -303,6 +304,30 @@ class TestHarvestList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class TestHarvestDetails(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(name="Test Field", area=100)
+        self.crop = Crop.objects.create(name="Wheat")
+        self.storage = Storage.objects.create(name="Main Storage", capacity=10000)
+        self.harvest = Harvest.objects.create(
+            start_date=timezone.now(),
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage,
+        )
+
+    def test_harvest_details_response(self):
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse(
+                "harvest_app:harvest-detail",
+                kwargs={"pk": self.harvest.pk}
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+
 class TestHarvestCreate(TestCase):
     def setUp(self):
         self.field = Field.objects.create(
@@ -521,4 +546,26 @@ class TestHarvestArchiveCreateView(BaseAuthenticatedTestCase):
         response = self.client.post(self.url, {"tons_harvested": 0})
         self.assertEqual(HarvestArchive.objects.count(), 0)
         self.assertTrue(Harvest.objects.filter(pk=self.harvest.pk).exists())
+        self.assertEqual(response.status_code, 200)
+
+
+class TestHarvestArchiveDetails(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.harvest_archive = HarvestArchive.objects.create(
+            start_date=timezone.now(),
+            field_name="Test Field",
+            crop_name="Wheat",
+            storage_name="Main Storage",
+            tons_harvested=100,
+        )
+
+    def test_harvest_archive_details_response(self):
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse(
+                "harvest_app:harvest-archive-detail",
+                kwargs={"pk": self.harvest_archive.pk}
+            )
+        )
         self.assertEqual(response.status_code, 200)

@@ -131,6 +131,9 @@ class HarvestVehicleCreateForm(forms.ModelForm):
             if vehicle.vehicle_type == "combine_harvester" and trailer:
                 self.add_error("trailer", "Trailer cannot be attached to combine harvester")
 
+            if vehicle.vehicle_type in ("tractor", "truck") and not trailer:
+                self.add_error("trailer", "Trucks and tractors must have trailers")
+
         return cleaned_data
 
     def save(self, commit=True):

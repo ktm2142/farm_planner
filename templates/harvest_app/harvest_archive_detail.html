@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>Harvest on {{ harvest_archive.field_name }} field</h1>
+  <p>Start date: {{ harvest_archive.start_date|date:"d.m.Y H:i" }}</p>
+  <p>End date: {{ harvest_archive.end_date|date:"d.m.Y H:i" }}</p>
+  <p>Storage: {{ harvest_archive.storage_name }}</p>
+  <p>Crop: {{ harvest_archive.crop_name }}</p>
+  <p>Harvested: {{ harvest_archive.tons_harvested }} tons</p>
+  <h3>Vehicles, drivers and trailers</h3>
+  <ul>
+    {% for v in harvest_archive.vehicles_info %}
+      <li>
+        <p>
+          {{ v.vehicle_type }} - {{ v.vehicle_model }}
+          ({{ v.vehicle_license_plate }})
+        </p>
+        <p>
+          {{ v.driver_first_name }}
+          {{ v.driver_last_name }}
+          {{ v.driver_phone_number }}
+        </p>
+        {% if v.trailer_type %}
+          <p>
+            {{ v.trailer_type }}
+            ({{ v.trailer_license_plate }})
+          </p>
+        {% endif %}
+      </li>
+      <hr>
+    {% endfor %}
+  </ul>
+
+
+{% endblock %}

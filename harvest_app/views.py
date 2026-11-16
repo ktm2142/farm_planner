@@ -171,17 +171,40 @@ class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         harvest = self.harvest
-        vehicles = ", ".join(
-            f"{assignment.vehicle.license_plate} "
-            f"({assignment.driver.last_name})"
-            for assignment in harvest.assignments.all()
-        )
+        vehicles_list = []
+
+        for assignment in harvest.assignments.all():
+            vehicle = assignment.vehicle
+            driver = assignment.driver
+            trailer = assignment.trailer
+
+            vehicle_data = {
+                "vehicle_type": vehicle.get_vehicle_type_display(),
+                "vehicle_model": vehicle.model,
+                "vehicle_license_plate": vehicle.license_plate,
+                "driver_first_name": driver.first_name,
+                "driver_last_name": driver.last_name,
+                "driver_phone_number": driver.phone_number
+            }
+
+            if trailer:
+                vehicle_data["trailer_type"] = trailer.get_trailer_type_display()
+                vehicle_data["trailer_license_plate"] = trailer.license_plate
+
+            vehicles_list.append(vehicle_data)
+
         form.instance.start_date = harvest.start_date
         form.instance.field_name = harvest.field.name
         form.instance.crop_name = harvest.crop.name
         form.instance.storage_name = harvest.storage.name
-        form.instance.vehicles_info = vehicles
+        form.instance.vehicles_info = vehicles_list
         with transaction.atomic():
             response = super().form_valid(form)
             harvest.delete()
         return response
+
+
+class HarvestArchiveDetailView(LoginRequiredMixin, DetailView):
+    model = HarvestArchive
+    template_name = "harvest_app/harvest_archive_detail.html"
+    context_object_name = "harvest_archive"

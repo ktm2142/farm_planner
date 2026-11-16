@@ -203,7 +203,7 @@ class HarvestArchive(models.Model):
     field_name = models.CharField(max_length=255)
     crop_name = models.CharField(max_length=255)
     storage_name = models.CharField(max_length=255)
-    vehicles_info = models.TextField()
+    vehicles_info = models.JSONField(default=list)
     end_date = models.DateTimeField(auto_now_add=True)
     tons_harvested = models.IntegerField(validators=[
         MinValueValidator(
