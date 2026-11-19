@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.template.base import kwarg_re
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from harvest_app.forms import (
-    FieldCreateForm, CropCreateForm, StorageCreateForm,
+    FieldForm, CropCreateForm, StorageCreateForm,
     DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
     HarvestCreateForm, HarvestVehicleCreateForm, HarvestArchiveCreateForm
 )
@@ -57,7 +56,7 @@ class TestFieldCreateForm(TestCase):
             "name": "Test Name",
             "area": 12.34
         }
-        form = FieldCreateForm(data=form_data)
+        form = FieldForm(data=form_data)
         self.assertTrue(form.is_valid())
 
     def test_field_create_form_is_not_valid(self):
@@ -65,9 +64,26 @@ class TestFieldCreateForm(TestCase):
             "name": "Test Name",
             "area": 123456.78
         }
-        form = FieldCreateForm(data=form_data)
+        form = FieldForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("area", form.errors)
+
+
+class TestFieldUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(
+            name="Test Field",
+            area="12345.67"
+        )
+        self.url = reverse(
+            "harvest_app:field-update",
+            kwargs={"pk": self.field.pk}
+        )
+
+    def test_field_update_view_is_valid(self):
+        response = self.client.post(self.url, {"Changed Name": 123.45})
+        self.assertEqual(response.status_code, 200)
 
 
 class TestCropListView(BaseAuthenticatedTestCase):

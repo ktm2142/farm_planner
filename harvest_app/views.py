@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from harvest_app.forms import (
-    FieldCreateForm, CropCreateForm, StorageCreateForm,
+    FieldForm, CropCreateForm, StorageCreateForm,
     DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
     HarvestCreateForm, HarvestVehicleCreateForm, HarvestArchiveCreateForm
 )
@@ -32,13 +32,19 @@ def index(request):
 class FieldListView(LoginRequiredMixin, ListView):
     model = Field
 
+
 class FieldDetailsView(LoginRequiredMixin, DetailView):
     model = Field
-    # template_name = "harvest_app/field_detail.html"
+
+
+class FieldUpdateView(LoginRequiredMixin, UpdateView):
+    model = Field
+    fields = "__all__"
+
 
 class FieldCreateView(LoginRequiredMixin, CreateView):
     model = Field
-    form_class = FieldCreateForm
+    form_class = FieldForm
     success_url = "/fields"
 
 

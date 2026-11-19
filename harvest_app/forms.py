@@ -6,7 +6,7 @@ from harvest_app.models import (
 )
 
 
-class FieldCreateForm(forms.ModelForm):
+class FieldForm(forms.ModelForm):
     class Meta:
         model = Field
         fields = "__all__"
