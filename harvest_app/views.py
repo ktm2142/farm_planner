@@ -32,6 +32,9 @@ def index(request):
 class FieldListView(LoginRequiredMixin, ListView):
     model = Field
 
+class FieldDetailsView(LoginRequiredMixin, DetailView):
+    model = Field
+    # template_name = "harvest_app/field_detail.html"
 
 class FieldCreateView(LoginRequiredMixin, CreateView):
     model = Field

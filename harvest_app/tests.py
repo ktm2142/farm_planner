@@ -24,7 +24,7 @@ class BaseAuthenticatedTestCase(TestCase):
         super().setUp()
 
 
-class TestFieldList(BaseAuthenticatedTestCase):
+class TestFieldListView(BaseAuthenticatedTestCase):
     def test_field_list_response(self):
         self.client.force_login(self.user)
         response = self.client.get(
@@ -33,7 +33,25 @@ class TestFieldList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestFieldCreate(TestCase):
+class TestFieldDetailsView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(
+            name="test name",
+            area=1234.56
+        )
+
+    def test_field_details_response(self):
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("harvest_app:field-details",
+                    kwargs={"pk": self.field.pk}
+                    )
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+class TestFieldCreateForm(TestCase):
     def test_field_create_form_is_valid(self):
         form_data = {
             "name": "Test Name",
@@ -52,7 +70,7 @@ class TestFieldCreate(TestCase):
         self.assertIn("area", form.errors)
 
 
-class TestCropList(BaseAuthenticatedTestCase):
+class TestCropListView(BaseAuthenticatedTestCase):
     def test_crop_list_response(self):
         response = self.client.get(
             reverse("harvest_app:crop-list")
@@ -60,7 +78,7 @@ class TestCropList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestCropCreate(TestCase):
+class TestCropCreateForm(TestCase):
     def test_crop_create_form(self):
         form_data = {
             "name": "Test Crop",
@@ -69,7 +87,7 @@ class TestCropCreate(TestCase):
         self.assertTrue(form.is_valid())
 
 
-class TestStorageList(BaseAuthenticatedTestCase):
+class TestStorageListView(BaseAuthenticatedTestCase):
     def test_storage_list_response(self):
         response = self.client.get(
             reverse("harvest_app:storage-list")
@@ -77,7 +95,7 @@ class TestStorageList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestStorageCreate(TestCase):
+class TestStorageCreateForm(TestCase):
     def test_storage_create_form_is_valid(self):
         form_data = {
             "name": "Test Storage",
@@ -105,7 +123,7 @@ class TestStorageCreate(TestCase):
         self.assertIn("capacity", form.errors)
 
 
-class TestDriverList(BaseAuthenticatedTestCase):
+class TestDriverListView(BaseAuthenticatedTestCase):
     def test_driver_list_response(self):
         response = self.client.get(
             reverse("harvest_app:driver-list")
@@ -113,7 +131,7 @@ class TestDriverList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestDriverCreate(TestCase):
+class TestDriverCreateForm(TestCase):
     def test_driver_create_form_is_valid(self):
         form_data = {
             "first_name": "John",
@@ -162,7 +180,7 @@ class TestDriverCreate(TestCase):
         self.assertIn("professional_experience", form.errors)
 
 
-class TestTrailerList(BaseAuthenticatedTestCase):
+class TestTrailerListView(BaseAuthenticatedTestCase):
     def test_trailer_list_response(self):
         response = self.client.get(
             reverse("harvest_app:trailer-list")
@@ -170,7 +188,7 @@ class TestTrailerList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestTrailerCreate(TestCase):
+class TestTrailerCreateForm(TestCase):
     def test_trailer_create_form_is_valid(self):
         form_data = {
             "trailer_type": "grain_cart",
@@ -226,7 +244,7 @@ class TestTrailerCreate(TestCase):
         self.assertIn("license_plate", form.errors)
 
 
-class TestVehicleList(BaseAuthenticatedTestCase):
+class TestVehicleListView(BaseAuthenticatedTestCase):
     def test_vehicle_list_response(self):
         response = self.client.get(
             reverse("harvest_app:vehicle-list")
@@ -234,7 +252,7 @@ class TestVehicleList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestVehicleCreate(TestCase):
+class TestVehicleCreateForm(TestCase):
     def test_vehicle_create_form_is_valid(self):
         form_data = {
             "vehicle_type": "tractor",
@@ -296,7 +314,7 @@ class TestVehicleCreate(TestCase):
         self.assertIn("license_plate", form.errors)
 
 
-class TestHarvestList(BaseAuthenticatedTestCase):
+class TestHarvestListView(BaseAuthenticatedTestCase):
     def test_harvest_list_response(self):
         response = self.client.get(
             reverse("harvest_app:harvest-list")
@@ -304,7 +322,7 @@ class TestHarvestList(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestHarvestDetails(BaseAuthenticatedTestCase):
+class TestHarvestDetailsView(BaseAuthenticatedTestCase):
     def setUp(self):
         super().setUp()
         self.field = Field.objects.create(name="Test Field", area=100)
@@ -328,7 +346,7 @@ class TestHarvestDetails(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestHarvestCreate(TestCase):
+class TestHarvestCreateForm(TestCase):
     def setUp(self):
         self.field = Field.objects.create(
             name="Test Field",
@@ -364,7 +382,7 @@ class TestHarvestCreate(TestCase):
         self.assertIn("start_date", form.errors)
 
 
-class TestHarvestVehicleCreate(TestCase):
+class TestHarvestVehicleCreateForm(TestCase):
     def setUp(self):
         self.vehicle = Vehicle.objects.create(
             vehicle_type="tractor",
@@ -453,7 +471,7 @@ class TestHarvestVehicleCreate(TestCase):
         self.assertIn("trailer", form.errors)
 
 
-class TestHarvestArchiveList(BaseAuthenticatedTestCase):
+class TestHarvestArchiveListView(BaseAuthenticatedTestCase):
     def test_harvest_archive_list_response(self):
         response = self.client.get(
             reverse("harvest_app:harvest-archive-list")
@@ -549,7 +567,7 @@ class TestHarvestArchiveCreateView(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestHarvestArchiveDetails(BaseAuthenticatedTestCase):
+class TestHarvestArchiveDetailsView(BaseAuthenticatedTestCase):
     def setUp(self):
         super().setUp()
         self.harvest_archive = HarvestArchive.objects.create(

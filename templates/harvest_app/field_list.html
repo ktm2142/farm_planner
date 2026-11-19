@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if field_list %}
-    	<ul>
-      {% for field in field_list %}
-      	<li>{{ field.name }}</li>
-      	<li>{{ field.area }}</li>
-        <hr>
-      {% endfor %}
-
+      <ul>
+        {% for field in field_list %}
+          <li>{{ field.name }}</li>
+          <li>{{ field.area }}</li>
+          <a href="{% url "harvest_app:field-details" field.pk %}">Details</a>
+          <hr>
+        {% endfor %}
       </ul>
     {% endif %}
   </div>
