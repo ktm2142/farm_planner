@@ -37,15 +37,15 @@ class FieldDetailsView(LoginRequiredMixin, DetailView):
     model = Field
 
 
-class FieldUpdateView(LoginRequiredMixin, UpdateView):
-    model = Field
-    fields = "__all__"
-
-
 class FieldCreateView(LoginRequiredMixin, CreateView):
     model = Field
     form_class = FieldForm
     success_url = "/fields"
+
+
+class FieldUpdateView(LoginRequiredMixin, UpdateView):
+    model = Field
+    fields = "__all__"
 
 
 class CropListView(LoginRequiredMixin, ListView):

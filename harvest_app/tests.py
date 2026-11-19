@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -82,8 +84,14 @@ class TestFieldUpdateView(BaseAuthenticatedTestCase):
         )
 
     def test_field_update_view_is_valid(self):
-        response = self.client.post(self.url, {"Changed Name": 123.45})
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(self.url, {
+            "name": "Changed Field",
+            "area": 123.45
+        })
+        self.assertEqual(response.status_code, 302)
+        self.field.refresh_from_db()
+        self.assertEqual(self.field.name, "Changed Field")
+        self.assertEqual(self.field.area, Decimal("123.45"))
 
 
 class TestCropListView(BaseAuthenticatedTestCase):
