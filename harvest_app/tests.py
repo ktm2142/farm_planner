@@ -188,6 +188,48 @@ class TestStorageForm(TestCase):
         self.assertIn("capacity", form.errors)
 
 
+class TestStorageUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.storage = Storage.objects.create(
+            name="Test storage",
+            capacity=999
+        )
+        self.url = reverse(
+            "harvest_app:storage-update",
+            kwargs={"pk": self.storage.pk}
+        )
+
+    def test_field_update_view_is_valid(self):
+        response = self.client.post(self.url, {
+            "name": "Changed Storage",
+            "capacity": 2000
+        })
+        self.assertEqual(response.status_code, 302)
+        self.storage.refresh_from_db()
+        self.assertEqual(self.storage.name, "Changed Storage")
+
+
+class TestStorageDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.storage = Storage.objects.create(
+            name="Test storage",
+            capacity=999
+        )
+        self.url = reverse(
+            "harvest_app:storage-delete",
+            kwargs={"pk": self.storage.pk}
+        )
+
+    def test_field_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Crop.objects.filter(pk=self.storage.pk).exists()
+        )
+
+
 class TestDriverListView(BaseAuthenticatedTestCase):
     def test_driver_list_response(self):
         response = self.client.get(

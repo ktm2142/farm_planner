@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if storage_list %}
-    	<ul>
-      {% for storage in storage_list %}
-      	<li>{{ storage.name }}</li>
-      	<li>{{ storage.capacity }} tonnes</li>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for storage in storage_list %}
+          <li>{{ storage.name }}</li>
+          <li>{{ storage.capacity }} tonnes</li>
+          <a href="{% url "harvest_app:storage-update" storage.pk %}">Update</a>
+          <a href="{% url "harvest_app:storage-delete" storage.pk %}">Delete</a>
+          <hr>
+        {% endfor %}
 
       </ul>
     {% endif %}

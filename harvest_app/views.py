@@ -81,6 +81,17 @@ class StorageCreateView(LoginRequiredMixin, CreateView):
     success_url = "/storages"
 
 
+class StorageUpdateView(LoginRequiredMixin, UpdateView):
+    model = Storage
+    fields = "__all__"
+    success_url = "/storages"
+
+
+class StorageDeleteView(LoginRequiredMixin, DeleteView):
+    model = Storage
+    success_url = "/storages"
+
+
 class DriverListView(LoginRequiredMixin, ListView):
     model = Driver
 
