@@ -9,6 +9,6 @@
   <p>Professional experience: {{ driver.professional_experience }}</p>
   <p>Hired on: {{ driver.hire_date }}</p>
 
-{#  <a href="{% url "harvest_app:driver-update" driver.pk %}">Update driver info</a>#}
-{#  <a href="{% url "harvest_app:driver-delete" driver.pk %}">Delete driver</a>#}
+  <a href="{% url "harvest_app:driver-update" driver.pk %}">Update driver info</a>
+  <a href="{% url "harvest_app:driver-delete" driver.pk %}">Delete driver</a>
 {% endblock %}

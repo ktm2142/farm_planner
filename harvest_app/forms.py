@@ -27,12 +27,16 @@ class StorageForm(forms.ModelForm):
 class DriverForm(forms.ModelForm):
     class Meta:
         model = Driver
-        fields = "__all__"
+        fields = [
+            "first_name",
+            "last_name",
+            "phone_number",
+            "professional_experience",
+            "hire_date"
+        ]
         widgets = {
             "hire_date": forms.DateInput(
-                attrs={
-                    "type": "date"
-                }
+                attrs={"type": "date"},
             )
         }
 

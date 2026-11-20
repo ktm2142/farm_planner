@@ -63,6 +63,9 @@ class Driver(models.Model):
     def __str__(self):
         return f"{self.last_name} {self.phone_number}"
 
+    def get_absolute_url(self):
+        return reverse("harvest_app:driver-detail", kwargs={"pk": self.pk})
+
 
 class Trailer(models.Model):
     TRAILER_TYPE_CHOICES = [

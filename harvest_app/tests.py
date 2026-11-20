@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -307,6 +308,61 @@ class TestDriverDetailView(BaseAuthenticatedTestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestDriverUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.driver = Driver.objects.create(
+            first_name="Test First Name",
+            last_name="Test Last Name",
+            phone_number=+55519347593,
+            hire_date="2020-02-27",
+            professional_experience=5
+        )
+        self.url = reverse(
+            "harvest_app:driver-update",
+            kwargs={"pk": self.driver.pk}
+        )
+
+    def test_driver_update_view(self):
+        response = self.client.post(self.url, {
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+1234567890",
+            "hire_date": "2026-01-18",
+            "professional_experience": 0,
+        })
+        self.assertEqual(response.status_code, 302)
+        self.driver.refresh_from_db()
+        self.assertEqual(self.driver.first_name, "John")
+        self.assertEqual(self.driver.last_name, "Doe")
+        self.assertEqual(self.driver.phone_number, "+1234567890")
+        self.assertEqual(self.driver.hire_date, date(2026, 1, 18))
+        self.assertEqual(self.driver.professional_experience, 0)
+
+
+class TestDriverDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.driver = Driver.objects.create(
+            first_name="Test First Name",
+            last_name="Test Last Name",
+            phone_number=+55519347593,
+            hire_date="2020-02-27",
+            professional_experience=5
+        )
+        self.url = reverse(
+            "harvest_app:driver-delete",
+            kwargs={"pk": self.driver.pk}
+        )
+
+    def test_field_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Driver.objects.filter(pk=self.driver.pk).exists()
+        )
 
 
 class TestTrailerListView(BaseAuthenticatedTestCase):
