@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <h1>Details of the field</h1>
-  <p>Name: {{ field.name }}</p>
-  <p>Field: {{ field.area }}</p>
-    <a href="{% url "harvest_app:field-update" field.pk %}">Update</a>
-  {#  <a href="{% url "harvest_app:delete-field" field.pk %}">Delete</a>#}
-{% endblock %}

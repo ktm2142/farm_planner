@@ -23,9 +23,6 @@ class Field(models.Model):
     def __str__(self):
         return f"{self.name} x {self.area} ha"
 
-    def get_absolute_url(self):
-        return reverse("harvest_app:field-details", kwargs={"pk": self.pk})
-
 
 class Storage(models.Model):
     name = models.CharField(max_length=255)

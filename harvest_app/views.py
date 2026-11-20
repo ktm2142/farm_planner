@@ -7,9 +7,9 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from harvest_app.forms import (
-    FieldForm, CropCreateForm, StorageCreateForm,
-    DriverCreateForm, TrailerCreateForm, VehicleCreateForm,
-    HarvestCreateForm, HarvestVehicleCreateForm, HarvestArchiveCreateForm
+    FieldForm, CropForm, StorageForm,
+    DriverForm, TrailerForm, VehicleForm,
+    HarvestForm, HarvestVehicleForm, HarvestArchiveForm
 )
 from harvest_app.models import (
     Field, Crop, Storage,
@@ -46,6 +46,7 @@ class FieldCreateView(LoginRequiredMixin, CreateView):
 class FieldUpdateView(LoginRequiredMixin, UpdateView):
     model = Field
     fields = "__all__"
+    success_url = "/fields"
 
 
 class CropListView(LoginRequiredMixin, ListView):
@@ -54,7 +55,7 @@ class CropListView(LoginRequiredMixin, ListView):
 
 class CropCreateView(LoginRequiredMixin, CreateView):
     model = Crop
-    form_class = CropCreateForm
+    form_class = CropForm
     success_url = "/crops"
 
 
@@ -64,7 +65,7 @@ class StorageListView(LoginRequiredMixin, ListView):
 
 class StorageCreateView(LoginRequiredMixin, CreateView):
     model = Storage
-    form_class = StorageCreateForm
+    form_class = StorageForm
     success_url = "/storages"
 
 
@@ -74,7 +75,7 @@ class DriverListView(LoginRequiredMixin, ListView):
 
 class DriverCreateView(LoginRequiredMixin, CreateView):
     model = Driver
-    form_class = DriverCreateForm
+    form_class = DriverForm
     success_url = "/drivers"
 
 
@@ -84,7 +85,7 @@ class TrailerListView(LoginRequiredMixin, ListView):
 
 class TrailerCreateView(LoginRequiredMixin, CreateView):
     model = Trailer
-    form_class = TrailerCreateForm
+    form_class = TrailerForm
     success_url = "/trailers"
 
 
@@ -94,7 +95,7 @@ class VehicleListView(LoginRequiredMixin, ListView):
 
 class VehicleCreateView(LoginRequiredMixin, CreateView):
     model = Vehicle
-    form_class = VehicleCreateForm
+    form_class = VehicleForm
     success_url = "/vehicles"
 
 
@@ -111,7 +112,7 @@ class HarvestListView(LoginRequiredMixin, ListView):
 
 class HarvestCreateView(LoginRequiredMixin, CreateView):
     model = Harvest
-    form_class = HarvestCreateForm
+    form_class = HarvestForm
 
 
 class HarvestDetailView(LoginRequiredMixin, DetailView):
@@ -127,7 +128,7 @@ class HarvestDetailView(LoginRequiredMixin, DetailView):
 
 class HarvestVehicleCreateView(LoginRequiredMixin, CreateView):
     model = HarvestVehicle
-    form_class = HarvestVehicleCreateForm
+    form_class = HarvestVehicleForm
     template_name = "harvest_app/harvest_vehicle_form.html"
 
     def get_form_kwargs(self):
@@ -156,7 +157,7 @@ class HarvestArchiveList(LoginRequiredMixin, ListView):
 
 
 class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
-    form_class = HarvestArchiveCreateForm
+    form_class = HarvestArchiveForm
     template_name = "harvest_app/harvest_archive_form.html"
     success_url = "/harvests/archive"
 

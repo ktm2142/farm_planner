@@ -12,19 +12,19 @@ class FieldForm(forms.ModelForm):
         fields = "__all__"
 
 
-class CropCreateForm(forms.ModelForm):
+class CropForm(forms.ModelForm):
     class Meta:
         model = Crop
         fields = "__all__"
 
 
-class StorageCreateForm(forms.ModelForm):
+class StorageForm(forms.ModelForm):
     class Meta:
         model = Storage
         fields = "__all__"
 
 
-class DriverCreateForm(forms.ModelForm):
+class DriverForm(forms.ModelForm):
     class Meta:
         model = Driver
         fields = "__all__"
@@ -37,13 +37,13 @@ class DriverCreateForm(forms.ModelForm):
         }
 
 
-class TrailerCreateForm(forms.ModelForm):
+class TrailerForm(forms.ModelForm):
     class Meta:
         model = Trailer
         fields = "__all__"
 
 
-class VehicleCreateForm(forms.ModelForm):
+class VehicleForm(forms.ModelForm):
     class Meta:
         model = Vehicle
         fields = "__all__"
@@ -60,7 +60,7 @@ class VehicleCreateForm(forms.ModelForm):
         return cleaned_data
 
 
-class HarvestCreateForm(forms.ModelForm):
+class HarvestForm(forms.ModelForm):
     class Meta:
         model = Harvest
         fields = [
@@ -94,7 +94,7 @@ class HarvestCreateForm(forms.ModelForm):
         return cleaned_data
 
 
-class HarvestVehicleCreateForm(forms.ModelForm):
+class HarvestVehicleForm(forms.ModelForm):
     class Meta:
         model = HarvestVehicle
         fields = ["vehicle", "driver", "trailer"]
@@ -147,7 +147,7 @@ class HarvestVehicleCreateForm(forms.ModelForm):
         return instance
 
 
-class HarvestArchiveCreateForm(forms.ModelForm):
+class HarvestArchiveForm(forms.ModelForm):
     class Meta:
         model = HarvestArchive
         fields = ["tons_harvested"]
