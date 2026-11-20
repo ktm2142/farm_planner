@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from harvest_app.forms import (
     FieldForm, CropForm, StorageForm,
     DriverForm, TrailerForm, VehicleForm,
@@ -48,6 +48,10 @@ class FieldUpdateView(LoginRequiredMixin, UpdateView):
     fields = "__all__"
     success_url = "/fields"
 
+
+class FieldDeleteView(LoginRequiredMixin, DeleteView):
+    model = Field
+    success_url = "/fields"
 
 class CropListView(LoginRequiredMixin, ListView):
     model = Crop

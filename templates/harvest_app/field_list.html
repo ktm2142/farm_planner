@@ -6,8 +6,9 @@
       <ul>
         {% for field in field_list %}
           <li>{{ field.name }}</li>
-          <li>{{ field.area }}</li>
-          <a href="{% url "harvest_app:field-details" field.pk %}">Details</a>
+          <li>{{ field.area }} ha</li>
+          <a href="{% url "harvest_app:field-update" field.pk %}">Update</a>
+          <a href="{% url "harvest_app:field-delete" field.pk %}">Delete</a>
           <hr>
         {% endfor %}
       </ul>

@@ -76,6 +76,26 @@ class TestFieldUpdateView(BaseAuthenticatedTestCase):
         self.assertEqual(self.field.area, Decimal("123.45"))
 
 
+class TestFieldDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(
+            name="Field for deletion",
+            area="12345.67"
+        )
+        self.url = reverse(
+            "harvest_app:field-delete",
+            kwargs={"pk": self.field.pk}
+        )
+
+    def test_field_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Field.objects.filter(pk=self.field.pk).exists()
+        )
+
+
 class TestCropListView(BaseAuthenticatedTestCase):
     def test_crop_list_response(self):
         response = self.client.get(
