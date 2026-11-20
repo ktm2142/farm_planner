@@ -287,6 +287,28 @@ class TestDriverForm(TestCase):
         self.assertIn("professional_experience", form.errors)
 
 
+class TestDriverDetailView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.driver = Driver.objects.create(
+            first_name="Test First Name",
+            last_name="Test Last Name",
+            phone_number=+55519347593,
+            hire_date="2026-01-18",
+            professional_experience=5
+        )
+
+    def test_driver_detail_response(self):
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse(
+                "harvest_app:driver-detail",
+                kwargs={"pk": self.driver.pk}
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+
 class TestTrailerListView(BaseAuthenticatedTestCase):
     def test_trailer_list_response(self):
         response = self.client.get(

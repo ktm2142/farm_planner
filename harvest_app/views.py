@@ -102,6 +102,21 @@ class DriverCreateView(LoginRequiredMixin, CreateView):
     success_url = "/drivers"
 
 
+class DriverDetailView(LoginRequiredMixin, DetailView):
+    model = Driver
+    # form_class = DriverForm
+
+
+# class DriverUpdateView(LoginRequiredMixin, UpdateView):
+#     model = Storage
+#     fields = "__all__"
+#     success_url = "/drivers"
+#
+#
+# class DriverDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Driver
+#     success_url = "/drivers"
+
 class TrailerListView(LoginRequiredMixin, ListView):
     model = Trailer
 

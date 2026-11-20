@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>Information about driver</h1>
+  <p>First name: {{ driver.first_name }}</p>
+  <p>Last name: {{ driver.last_name }}</p>
+  <p>Phone number: {{ driver.phone_number }}</p>
+  <p>Professional experience: {{ driver.professional_experience }}</p>
+  <p>Hired on: {{ driver.hire_date }}</p>
+
+{#  <a href="{% url "harvest_app:driver-update" driver.pk %}">Update driver info</a>#}
+{#  <a href="{% url "harvest_app:driver-delete" driver.pk %}">Delete driver</a>#}
+{% endblock %}
