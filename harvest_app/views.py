@@ -33,10 +33,6 @@ class FieldListView(LoginRequiredMixin, ListView):
     model = Field
 
 
-class FieldDetailsView(LoginRequiredMixin, DetailView):
-    model = Field
-
-
 class FieldCreateView(LoginRequiredMixin, CreateView):
     model = Field
     form_class = FieldForm
@@ -53,6 +49,7 @@ class FieldDeleteView(LoginRequiredMixin, DeleteView):
     model = Field
     success_url = "/fields"
 
+
 class CropListView(LoginRequiredMixin, ListView):
     model = Crop
 
@@ -60,6 +57,17 @@ class CropListView(LoginRequiredMixin, ListView):
 class CropCreateView(LoginRequiredMixin, CreateView):
     model = Crop
     form_class = CropForm
+    success_url = "/crops"
+
+
+class CropUpdateView(LoginRequiredMixin, UpdateView):
+    model = Crop
+    fields = "__all__"
+    success_url = "/crops"
+
+
+class CropDeleteView(LoginRequiredMixin, DeleteView):
+    model = Crop
     success_url = "/crops"
 
 

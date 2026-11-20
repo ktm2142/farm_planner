@@ -113,6 +113,45 @@ class TestCropForm(TestCase):
         self.assertTrue(form.is_valid())
 
 
+class TestCropUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.crop = Crop.objects.create(
+            name="Test Crop",
+        )
+        self.url = reverse(
+            "harvest_app:crop-update",
+            kwargs={"pk": self.crop.pk}
+        )
+
+    def test_field_update_view_is_valid(self):
+        response = self.client.post(self.url, {
+            "name": "Changed Crop",
+        })
+        self.assertEqual(response.status_code, 302)
+        self.crop.refresh_from_db()
+        self.assertEqual(self.crop.name, "Changed Crop")
+
+
+class TestCropDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.crop = Crop.objects.create(
+            name="Test Crop",
+        )
+        self.url = reverse(
+            "harvest_app:crop-delete",
+            kwargs={"pk": self.crop.pk}
+        )
+
+    def test_field_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Crop.objects.filter(pk=self.crop.pk).exists()
+        )
+
+
 class TestStorageListView(BaseAuthenticatedTestCase):
     def test_storage_list_response(self):
         response = self.client.get(

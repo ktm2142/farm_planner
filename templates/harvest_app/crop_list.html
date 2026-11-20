@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if crop_list %}
-    	<ul>
-      {% for crop in crop_list %}
-      	<li>{{ crop.name }}</li>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for crop in crop_list %}
+          <li>{{ crop.name }}</li>
+          <a href="{% url "harvest_app:crop-update" crop.pk %}">Update</a>
+          <a href="{% url "harvest_app:crop-delete" crop.pk %}">Delete</a>
+          <hr>
+        {% endfor %}
 
       </ul>
     {% endif %}

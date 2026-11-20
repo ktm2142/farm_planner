@@ -5,7 +5,8 @@ from harvest_app.views import (
     HarvestListView, HarvestArchiveList, index,
     FieldCreateView, CropCreateView, StorageCreateView,
     DriverCreateView, TrailerCreateView, VehicleCreateView, HarvestCreateView, HarvestDetailView,
-    HarvestVehicleCreateView, HarvestArchiveCreateView, HarvestArchiveDetailView, FieldUpdateView, FieldDeleteView
+    HarvestVehicleCreateView, HarvestArchiveCreateView, HarvestArchiveDetailView, FieldUpdateView, FieldDeleteView,
+    CropUpdateView, CropDeleteView
 )
 
 urlpatterns = [
@@ -16,6 +17,8 @@ urlpatterns = [
     path("fields/<int:pk>/delete/", FieldDeleteView.as_view(), name="field-delete"),
     path("crops/", CropListView.as_view(), name="crop-list"),
     path("crops/create/", CropCreateView.as_view(), name="crop-create"),
+    path("crops/<int:pk>/update/", CropUpdateView.as_view(), name="crop-update"),
+    path("crops/<int:pk>/delete/", CropDeleteView.as_view(), name="crop-delete"),
     path("storages/", StorageListView.as_view(), name="storage-list"),
     path("storages/create/", StorageCreateView.as_view(), name="storage-create"),
     path("drivers/", DriverListView.as_view(), name="driver-list"),
