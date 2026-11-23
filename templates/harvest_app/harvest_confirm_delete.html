@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Deleting storage</h1>
+  <form action="" method="post">
+    {% csrf_token %}
+    <h3>
+      Are you sure you want to delete harvest from
+      {{ storage.start_date }} on {{ harvest.field.name }}?
+    </h3>
+
+    <button type="submit" class="btn btn-primary">Yes, delete</button>
+    <a href="{% url "harvest_app:harvest-detail" harvest.pk %}" class="btn btn-secondary">Cancel</a>
+
+  </form>
+{% endblock %}

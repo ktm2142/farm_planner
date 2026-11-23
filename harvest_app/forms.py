@@ -90,7 +90,7 @@ class HarvestForm(forms.ModelForm):
                 "status",
                 "Completed harvest cannot be created."
             )
-        if start_date < timezone.now():
+        if start_date is not None and start_date < timezone.now():
             self.add_error(
                 "start_date",
                 "You cannot create harvest in passed dates."

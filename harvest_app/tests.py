@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timezone as dt_timezone
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -560,7 +560,7 @@ class TestVehicleUpdateView(BaseAuthenticatedTestCase):
             kwargs={"pk": self.vehicle.pk}
         )
 
-    def test_trailer_update_view(self):
+    def test_vehicle_update_view(self):
         response = self.client.post(self.url, {
             "vehicle_type": "truck",
             "model": "Test truck model",
@@ -663,6 +663,77 @@ class TestHarvestForm(TestCase):
         form = HarvestForm(data=form_data)
         self.assertFalse(form.is_valid(), form.errors)
         self.assertIn("start_date", form.errors)
+
+
+class TestHarvestUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(name="Test Field", area=100)
+        self.crop = Crop.objects.create(name="Wheat")
+        self.storage = Storage.objects.create(name="Main Storage", capacity=10000)
+        self.harvest = Harvest.objects.create(
+            start_date=timezone.now(),
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage,
+        )
+        self.url = reverse(
+            "harvest_app:harvest-update",
+            kwargs={"pk": self.harvest.pk}
+        )
+
+    def test_harvest_update_view(self):
+        new_field = Field.objects.create(
+            name="Updated Field",
+            area=12.50
+        )
+        new_crop = Crop.objects.create(
+            name="Updated Crop",
+        )
+        new_storage = Storage.objects.create(
+            name="Updated Storage",
+            capacity=2000
+        )
+        new_start_date = datetime(2027, 8, 11, 9, 0, tzinfo=dt_timezone.utc)
+        response = self.client.post(self.url, {
+            "status": "in_progress",
+            "start_date": new_start_date,
+            "field": new_field.pk,
+            "crop": new_crop.pk,
+            "storage": new_storage.pk
+        })
+        self.assertEqual(response.status_code, 302)
+        self.harvest.refresh_from_db()
+        self.assertEqual(self.harvest.status, "in_progress")
+        self.assertEqual(self.harvest.start_date, new_start_date)
+        self.assertEqual(self.harvest.field.pk, new_field.pk)
+        self.assertEqual(self.harvest.crop.pk, new_crop.pk)
+        self.assertEqual(self.harvest.storage.pk, new_storage.pk)
+
+
+class TestHarvestDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.field = Field.objects.create(name="Test Field", area=100)
+        self.crop = Crop.objects.create(name="Wheat")
+        self.storage = Storage.objects.create(name="Main Storage", capacity=10000)
+        self.harvest = Harvest.objects.create(
+            start_date=timezone.now(),
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage,
+        )
+        self.url = reverse(
+            "harvest_app:harvest-delete",
+            kwargs={"pk": self.harvest.pk}
+        )
+
+    def test_field_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Harvest.objects.filter(pk=self.harvest.pk).exists()
+        )
 
 
 class TestHarvestVehicleForm(TestCase):

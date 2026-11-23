@@ -4,21 +4,28 @@
 {% block content %}
   <h1>{{ harvest.field }} {{ harvest.crop }}</h1>
   <p>Status: {{ harvest.get_status_display }}</p>
+  <p>Field: {{ harvest.field.name }}</p>
+  <p>Crop: {{ harvest.crop.name }}</p>
   <p>Storage: {{ harvest.storage }}</p>
 
   <h3>Vehicles</h3>
   <ul>
     {% for assignment in harvest.assignments.all %}
       <li>
-        {{ assignment.vehicle }} - {{ assignment.driver.last_name }}
+        {{ assignment.vehicle.get_vehicle_type_display }} -
+        {{ assignment.driver.first_name|slice:":1" }}.
+        {{ assignment.driver.last_name }},
         {% if assignment.trailer %}
-          {{ assignment.trailer }}
+          {{ assignment.trailer.get_trailer_type_display }}
         {% endif %}
       </li>
     {% empty %}
       <p>No vehicles yet</p>
     {% endfor %}
   </ul>
-  <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}">Add vehicle</a>
-  <a href="{% url "harvest_app:add-to-archive" harvest.pk %}">Complete harvest</a>
+  <a href="{% url "harvest_app:harvest-update" harvest.pk %}" class="btn btn-primary">Update harvest</a>
+  <a href="{% url "harvest_app:harvest-delete" harvest.pk %}" class="btn btn-primary">Delete harvest</a>
+  <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}" class="btn btn-primary">Add vehicle</a>
+  <a href="{% url "harvest_app:add-to-archive" harvest.pk %}" class="btn btn-primary">Complete harvest</a>
+  <a href="{% url "harvest_app:harvest-list" %}" class="btn btn-secondary">Back</a>
 {% endblock %}

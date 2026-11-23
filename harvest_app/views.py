@@ -185,6 +185,16 @@ class HarvestDetailView(LoginRequiredMixin, DetailView):
         )
 
 
+class HarvestUpdateView(LoginRequiredMixin, UpdateView):
+    model = Harvest
+    form_class = HarvestForm
+
+
+class HarvestDeleteView(LoginRequiredMixin, DeleteView):
+    model = Harvest
+    success_url = "/harvests"
+
+
 class HarvestVehicleCreateView(LoginRequiredMixin, CreateView):
     model = HarvestVehicle
     form_class = HarvestVehicleForm
