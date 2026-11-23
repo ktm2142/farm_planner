@@ -7,5 +7,7 @@
     {% csrf_token %}
     {{ form|crispy }}
     <input type="submit" value="Submit" class="btn btn-primary">
+    <a href="{% url "harvest_app:trailer-list" %}" class="btn btn-secondary">Cancel</a>
+  
   </form>
 {% endblock %}

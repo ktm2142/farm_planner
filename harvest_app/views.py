@@ -111,7 +111,6 @@ class DriverUpdateView(LoginRequiredMixin, UpdateView):
     form_class = DriverForm
 
 
-
 class DriverDeleteView(LoginRequiredMixin, DeleteView):
     model = Driver
     success_url = "/drivers"
@@ -124,6 +123,17 @@ class TrailerListView(LoginRequiredMixin, ListView):
 class TrailerCreateView(LoginRequiredMixin, CreateView):
     model = Trailer
     form_class = TrailerForm
+    success_url = "/trailers"
+
+
+class TrailerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Trailer
+    fields = "__all__"
+    success_url = "/trailers"
+
+
+class TrailerDeleteView(LoginRequiredMixin, DeleteView):
+    model = Trailer
     success_url = "/trailers"
 
 

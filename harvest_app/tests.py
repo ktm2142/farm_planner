@@ -429,6 +429,53 @@ class TestTrailerForm(TestCase):
         self.assertIn("license_plate", form.errors)
 
 
+class TestTrailerUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.trailer = Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=20,
+            license_plate="12AF34"
+        )
+        self.url = reverse(
+            "harvest_app:trailer-update",
+            kwargs={"pk": self.trailer.pk}
+        )
+
+    def test_trailer_update_view_is_valid(self):
+        response = self.client.post(self.url, {
+            "trailer_type": "tipper_trailer",
+            "capacity": 15,
+            "license_plate": "99IOP11"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.trailer.refresh_from_db()
+        self.assertEqual(self.trailer.trailer_type, "tipper_trailer")
+        self.assertEqual(self.trailer.capacity, 15)
+        self.assertEqual(self.trailer.license_plate, "99IOP11")
+
+
+class TestTrailerDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.trailer = Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=20,
+            license_plate="12AF34"
+        )
+        self.url = reverse(
+            "harvest_app:trailer-delete",
+            kwargs={"pk": self.trailer.pk}
+        )
+
+    def test_trailer_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Trailer.objects.filter(pk=self.trailer.pk).exists()
+        )
+
+
 class TestVehicleListView(BaseAuthenticatedTestCase):
     def test_vehicle_list_response(self):
         response = self.client.get(

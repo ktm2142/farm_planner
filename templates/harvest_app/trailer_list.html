@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <div>
     {% if trailer_list %}
-    	<ul>
-      {% for trailer in trailer_list %}
-      	<li>{{ trailer.trailer_type }}</li>
-      	<li>{{ trailer.license_plate }}</li>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for trailer in trailer_list %}
+          <li>{{ trailer.get_trailer_type_display }}</li>
+          <li>{{ trailer.license_plate }}</li>
+          <li>{{ trailer.capacity }}</li>
+          <a href="{% url "harvest_app:trailer-update" trailer.pk %}">Update</a>
+          <a href="{% url "harvest_app:trailer-delete" trailer.pk %}">Delete</a>
+          <hr>
+        {% endfor %}
 
       </ul>
     {% endif %}
