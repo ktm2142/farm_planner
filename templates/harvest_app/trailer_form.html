@@ -6,8 +6,8 @@
   <form action="" method="post" novalidate>
     {% csrf_token %}
     {{ form|crispy }}
-    <input type="submit" value="Submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary">Save</button>
     <a href="{% url "harvest_app:trailer-list" %}" class="btn btn-secondary">Cancel</a>
-  
+
   </form>
 {% endblock %}

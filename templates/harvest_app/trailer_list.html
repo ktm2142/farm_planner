@@ -7,7 +7,7 @@
         {% for trailer in trailer_list %}
           <li>{{ trailer.get_trailer_type_display }}</li>
           <li>{{ trailer.license_plate }}</li>
-          <li>{{ trailer.capacity }}</li>
+          <li>{{ trailer.capacity }} tons</li>
           <a href="{% url "harvest_app:trailer-update" trailer.pk %}">Update</a>
           <a href="{% url "harvest_app:trailer-delete" trailer.pk %}">Delete</a>
           <hr>

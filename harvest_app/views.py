@@ -147,6 +147,17 @@ class VehicleCreateView(LoginRequiredMixin, CreateView):
     success_url = "/vehicles"
 
 
+class VehicleUpdateView(LoginRequiredMixin, UpdateView):
+    model = Vehicle
+    form_class = VehicleForm
+    success_url = "/vehicles"
+
+
+class VehicleDeleteView(LoginRequiredMixin, DeleteView):
+    model = Vehicle
+    success_url = "/vehicles"
+
+
 class HarvestListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Harvest.objects.select_related(

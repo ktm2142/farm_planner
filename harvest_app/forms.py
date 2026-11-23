@@ -59,7 +59,7 @@ class VehicleForm(forms.ModelForm):
         if vehicle_type == "combine_harvester" and load_capacity is not None:
             self.add_error(
                 "load_capacity",
-                "Only tractor and truck can have load capacity."
+                "Only tractor and truck can have load capacity. Delete this value"
             )
         return cleaned_data
 

@@ -8,9 +8,12 @@
           <li>{{ vehicle.get_vehicle_type_display }}</li>
           <li>{{ vehicle.model }}</li>
           <li>{{ vehicle.license_plate }}</li>
+
           {% if vehicle.load_capacity %}
-            {{ vehicle.load_capacity }} t.
+            <li>{{ vehicle.load_capacity }} tons</li>
           {% endif %}
+          <a href="{% url "harvest_app:vehicle-update" vehicle.pk %}">Update</a>
+          <a href="{% url "harvest_app:vehicle-delete" vehicle.pk %}">Delete</a>
           <hr>
         {% endfor %}
 

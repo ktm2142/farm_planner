@@ -66,7 +66,7 @@ class TestFieldUpdateView(BaseAuthenticatedTestCase):
             kwargs={"pk": self.field.pk}
         )
 
-    def test_field_update_view_is_valid(self):
+    def test_field_update_view(self):
         response = self.client.post(self.url, {
             "name": "Changed Field",
             "area": 123.45
@@ -125,7 +125,7 @@ class TestCropUpdateView(BaseAuthenticatedTestCase):
             kwargs={"pk": self.crop.pk}
         )
 
-    def test_field_update_view_is_valid(self):
+    def test_field_update_view(self):
         response = self.client.post(self.url, {
             "name": "Changed Crop",
         })
@@ -201,7 +201,7 @@ class TestStorageUpdateView(BaseAuthenticatedTestCase):
             kwargs={"pk": self.storage.pk}
         )
 
-    def test_field_update_view_is_valid(self):
+    def test_field_update_view(self):
         response = self.client.post(self.url, {
             "name": "Changed Storage",
             "capacity": 2000
@@ -442,7 +442,7 @@ class TestTrailerUpdateView(BaseAuthenticatedTestCase):
             kwargs={"pk": self.trailer.pk}
         )
 
-    def test_trailer_update_view_is_valid(self):
+    def test_trailer_update_view(self):
         response = self.client.post(self.url, {
             "trailer_type": "tipper_trailer",
             "capacity": 15,
@@ -544,6 +544,57 @@ class TestVehicleForm(TestCase):
         form = VehicleForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("license_plate", form.errors)
+
+
+class TestVehicleUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.vehicle = Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test model",
+            load_capacity=20,
+            license_plate="65UJKI90"
+        )
+        self.url = reverse(
+            "harvest_app:vehicle-update",
+            kwargs={"pk": self.vehicle.pk}
+        )
+
+    def test_trailer_update_view(self):
+        response = self.client.post(self.url, {
+            "vehicle_type": "truck",
+            "model": "Test truck model",
+            "load_capacity": 25,
+            "license_plate": "51TYH78"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.vehicle.refresh_from_db()
+        self.assertEqual(self.vehicle.vehicle_type, "truck")
+        self.assertEqual(self.vehicle.model, "Test truck model")
+        self.assertEqual(self.vehicle.load_capacity, 25)
+        self.assertEqual(self.vehicle.license_plate, "51TYH78")
+
+
+class TestVehicleDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.vehicle = Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test model",
+            load_capacity=20,
+            license_plate="65UJKI90"
+        )
+        self.url = reverse(
+            "harvest_app:vehicle-delete",
+            kwargs={"pk": self.vehicle.pk}
+        )
+
+    def test_trailer_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Vehicle.objects.filter(pk=self.vehicle.pk).exists()
+        )
 
 
 class TestHarvestListView(BaseAuthenticatedTestCase):
