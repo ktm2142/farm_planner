@@ -18,6 +18,7 @@
         {% if assignment.trailer %}
           {{ assignment.trailer.get_trailer_type_display }}
         {% endif %}
+      <a href={% url "harvest_app:harvest-update-vehicle" assignment.pk %}>Change</a>
       </li>
     {% empty %}
       <p>No vehicles yet</p>

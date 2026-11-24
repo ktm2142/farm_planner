@@ -825,6 +825,78 @@ class TestHarvestVehicleForm(TestCase):
         self.assertIn("trailer", form.errors)
 
 
+class TestHarvestVehicleUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.vehicle = Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test tractor",
+            load_capacity=30,
+            license_plate="CV7894LO"
+        )
+        self.driver = Driver.objects.create(
+            first_name="John",
+            last_name="Doe",
+            phone_number="+1234567890",
+            hire_date="2026-01-18",
+            professional_experience=0,
+        )
+        self.trailer = Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=20,
+            license_plate="JK298P"
+        )
+        self.field = Field.objects.create(name="Test Field", area=100)
+        self.crop = Crop.objects.create(name="Wheat")
+        self.storage = Storage.objects.create(name="Main Storage", capacity=10000)
+        self.harvest = Harvest.objects.create(
+            start_date=timezone.now(),
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage,
+        )
+        self.harvest_vehicle = HarvestVehicle.objects.create(
+            harvest_id=self.harvest.pk,
+            vehicle_id=self.vehicle.pk,
+            driver_id=self.driver.pk,
+            trailer_id=self.trailer.pk
+        )
+        self.url = reverse(
+            "harvest_app:harvest-update-vehicle",
+            kwargs={"pk": self.harvest.pk}
+        )
+
+    def test_harvest_vehicle_update_view(self):
+        new_vehicle = Vehicle.objects.create(
+            vehicle_type="truck",
+            model="Test truck",
+            load_capacity=15,
+            license_plate="IK45UY"
+        )
+        new_driver = Driver.objects.create(
+            first_name="George",
+            last_name="Piglet",
+            phone_number="+32894757846",
+            hire_date="2017-03-11",
+            professional_experience=20,
+        )
+        new_trailer = Trailer.objects.create(
+            trailer_type="grain_semi_trailer",
+            capacity=10,
+            license_plate="VB20398ED"
+        )
+        response = self.client.post(self.url, {
+            "vehicle": new_vehicle.pk,
+            "driver": new_driver.pk,
+            "trailer": new_trailer.pk
+        })
+        self.assertEqual(response.status_code, 302)
+        self.harvest_vehicle.refresh_from_db()
+        self.assertEqual(self.harvest_vehicle.vehicle.pk, new_vehicle.pk)
+        self.assertEqual(self.harvest_vehicle.driver.pk, new_driver.pk)
+        self.assertEqual(self.harvest_vehicle.trailer.pk, new_trailer.pk)
+
+
 class TestHarvestArchiveListView(BaseAuthenticatedTestCase):
     def test_harvest_archive_list_response(self):
         response = self.client.get(

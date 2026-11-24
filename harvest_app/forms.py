@@ -104,7 +104,7 @@ class HarvestVehicleForm(forms.ModelForm):
         fields = ["vehicle", "driver", "trailer"]
 
     def __init__(self, *args, **kwargs):
-        self.harvest = kwargs.pop("harvest", None)
+        self.harvest = kwargs.pop("harvest")
         super().__init__(*args, **kwargs)
 
     def clean(self):
@@ -113,25 +113,28 @@ class HarvestVehicleForm(forms.ModelForm):
         driver = cleaned_data.get("driver")
         trailer = cleaned_data.get("trailer")
 
-        if self.harvest:
-            if vehicle and HarvestVehicle.objects.filter(
-                    harvest=self.harvest,
-                    vehicle=vehicle
-            ).exists():
-                self.add_error("vehicle", "This vehicle is already in this harvest.")
+        other_vehicles = HarvestVehicle.objects.filter(
+            harvest=self.harvest
+        ).exclude(
+            pk=self.instance.pk
+        )
 
-            if driver and HarvestVehicle.objects.filter(
-                    harvest=self.harvest,
-                    driver=driver
-            ).exists():
-                self.add_error("driver", "This driver is already in this harvest.")
+        if vehicle and other_vehicles.filter(
+                vehicle=vehicle
+        ).exists():
+            self.add_error("vehicle", "This vehicle is already in this harvest.")
 
-            if trailer and HarvestVehicle.objects.filter(
-                    harvest=self.harvest,
-                    trailer=trailer
-            ).exists():
-                self.add_error("trailer", "This trailer is already in this harvest.")
+        if driver and other_vehicles.filter(
+                driver=driver
+        ).exists():
+            self.add_error("driver", "This driver is already in this harvest.")
 
+        if trailer and other_vehicles.filter(
+                trailer=trailer
+        ).exists():
+            self.add_error("trailer", "This trailer is already in this harvest.")
+
+        if vehicle:
             if vehicle.vehicle_type == "combine_harvester" and trailer:
                 self.add_error("trailer", "Trailer cannot be attached to combine harvester")
 
@@ -140,11 +143,11 @@ class HarvestVehicleForm(forms.ModelForm):
 
         return cleaned_data
 
+
     def save(self, commit=True):
         instance = super().save(commit=False)
-
-        if self.harvest:
-            instance.harvest = self.harvest
+        instance.harvest = self.harvest
+        
         if commit:
             instance.save()
 

@@ -216,7 +216,27 @@ class HarvestVehicleCreateView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse("harvest_app:harvest-detail", args=[self.kwargs["pk"]])
+        return reverse(
+            "harvest_app:harvest-detail",
+            kwargs={"pk": self.kwargs["pk"]}
+        )
+
+
+class HarvestVehicleUpdateView(LoginRequiredMixin, UpdateView):
+    model = HarvestVehicle
+    form_class = HarvestVehicleForm
+    template_name = "harvest_app/harvest_vehicle_form.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["harvest"] = self.object.harvest
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            "harvest_app:harvest-detail",
+            kwargs={"pk": self.object.harvest.pk}
+        )
 
 
 class HarvestArchiveList(LoginRequiredMixin, ListView):

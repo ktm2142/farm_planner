@@ -96,7 +96,7 @@ class Trailer(models.Model):
         ordering = ["trailer_type"]
 
     def __str__(self):
-        return f"{self.trailer_type} {self.license_plate} {self.capacity}"
+        return f"{self.get_trailer_type_display()} ({self.license_plate})"
 
 
 class Vehicle(models.Model):
@@ -130,9 +130,8 @@ class Vehicle(models.Model):
         ordering = ["vehicle_type"]
 
     def __str__(self):
-        return (f"{self.vehicle_type}"
-                f" {self.model} "
-                f"{self.license_plate}"
+        return (f"{self.get_vehicle_type_display()}"
+                f" ({self.license_plate})"
                 )
 
 
