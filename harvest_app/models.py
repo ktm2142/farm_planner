@@ -207,12 +207,14 @@ class HarvestArchive(models.Model):
     storage_name = models.CharField(max_length=255)
     vehicles_info = models.JSONField(default=list)
     end_date = models.DateTimeField(auto_now_add=True)
-    tons_harvested = models.IntegerField(validators=[
-        MinValueValidator(
+    tons_harvested = models.DecimalField(
+        validators=[MinValueValidator(
             1,
-            "Amount of harvested tons cannot be less then 1"
-        )
-    ])
+            "Amount of harvested tons cannot be less then 1")
+        ],
+        decimal_places=2,
+        max_digits=10
+    )
 
     class Meta:
         ordering = ["start_date"]

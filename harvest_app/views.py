@@ -319,6 +319,19 @@ class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
+class HarvestArchiveUpdateView(LoginRequiredMixin, UpdateView):
+    model = HarvestArchive
+    context_object_name = "harvest_archive"
+    fields = ["tons_harvested"]
+    template_name = "harvest_app/harvest_update_form.html"
+
+    def get_success_url(self):
+        return reverse(
+            "harvest_app:harvest-archive-detail",
+            kwargs={"pk": self.object.pk}
+        )
+
+
 class HarvestArchiveDetailView(LoginRequiredMixin, DetailView):
     model = HarvestArchive
     template_name = "harvest_app/harvest_archive_detail.html"

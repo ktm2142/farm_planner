@@ -23,8 +23,7 @@
         {% endif %}
       </li>
     {% empty %}
-      <p>No vehicles yet</p>
+      <p>No vehicles</p>
     {% endfor %}
   </ul>
-  <a href="{% url "harvest_app:harvest-add-vehicle" harvest.pk %}">Add vehicle</a>
 {% endblock %}
