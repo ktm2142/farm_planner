@@ -162,10 +162,6 @@ class HarvestListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Harvest.objects.select_related(
             "crop", "field", "storage"
-        ).prefetch_related(
-            "assignments__driver",
-            "assignments__vehicle",
-            "assignments__trailer"
         )
 
 
