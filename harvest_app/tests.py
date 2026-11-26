@@ -897,6 +897,55 @@ class TestHarvestVehicleUpdateView(BaseAuthenticatedTestCase):
         self.assertEqual(self.harvest_vehicle.trailer.pk, new_trailer.pk)
 
 
+class TestHarvestVehicleDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.vehicle = Vehicle.objects.create(
+            vehicle_type="tractor",
+            model="Test tractor",
+            load_capacity=30,
+            license_plate="CV7894LO"
+        )
+        self.driver = Driver.objects.create(
+            first_name="John",
+            last_name="Doe",
+            phone_number="+1234567890",
+            hire_date="2026-01-18",
+            professional_experience=0,
+        )
+        self.trailer = Trailer.objects.create(
+            trailer_type="grain_cart",
+            capacity=20,
+            license_plate="JK298P"
+        )
+        self.field = Field.objects.create(name="Test Field", area=100)
+        self.crop = Crop.objects.create(name="Wheat")
+        self.storage = Storage.objects.create(name="Main Storage", capacity=10000)
+        self.harvest = Harvest.objects.create(
+            start_date=timezone.now(),
+            field=self.field,
+            crop=self.crop,
+            storage=self.storage,
+        )
+        self.harvest_vehicle = HarvestVehicle.objects.create(
+            harvest_id=self.harvest.pk,
+            vehicle_id=self.vehicle.pk,
+            driver_id=self.driver.pk,
+            trailer_id=self.trailer.pk
+        )
+        self.url = reverse(
+            "harvest_app:harvest-delete-vehicle",
+            kwargs={"pk": self.harvest_vehicle.pk}
+        )
+
+    def test_harvest_vehicle_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            HarvestVehicle.objects.filter(pk=self.harvest_vehicle.pk).exists()
+        )
+
+
 class TestHarvestArchiveListView(BaseAuthenticatedTestCase):
     def test_harvest_archive_list_response(self):
         response = self.client.get(

@@ -239,6 +239,22 @@ class HarvestVehicleUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
+class HarvestVehicleDeleteView(LoginRequiredMixin, DeleteView):
+    context_object_name = "harvest_vehicle"
+    template_name = "harvest_app/harvest_vehicle_confirm_delete.html"
+
+    def get_queryset(self):
+        return HarvestVehicle.objects.select_related(
+            "harvest__field", "vehicle", "driver", "trailer"
+        )
+
+    def get_success_url(self):
+        return reverse(
+            "harvest_app:harvest-detail",
+            kwargs={"pk": self.object.harvest.pk}
+        )
+
+
 class HarvestArchiveList(LoginRequiredMixin, ListView):
     model = HarvestArchive
     context_object_name = "harvest_archive_list"
