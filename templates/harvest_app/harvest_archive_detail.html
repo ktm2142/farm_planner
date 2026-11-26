@@ -8,7 +8,8 @@
   <p>Storage: {{ harvest_archive.storage_name }}</p>
   <p>Crop: {{ harvest_archive.crop_name }}</p>
   <p>Harvested: {{ harvest_archive.tons_harvested }} tons
-    (<a href={% url "harvest_app:harvest-archive-update-tons" harvest_archive.pk %}>update tons</a>)
+    <a href="{% url "harvest_app:harvest-archive-update-tons" harvest_archive.pk %}" class="btn btn-primary">
+      Update tons</a>
   </p>
   <h3>Vehicles, drivers and trailers</h3>
   <ul>
@@ -33,6 +34,9 @@
       <hr>
     {% endfor %}
   </ul>
+  <a href="{% url "harvest_app:harvest-archive-delete" harvest_archive.pk %}" class="btn btn-primary">Delete from
+    archive</a>
+  <a href="{% url "harvest_app:harvest-archive-list" %}" class="btn btn-secondary">Back</a>
 
 
 {% endblock %}

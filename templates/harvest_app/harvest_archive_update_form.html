@@ -10,6 +10,7 @@
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Update tons</button>
+    <a href="{% url "harvest_app:harvest-archive-detail" harvest_archive.pk %}" class="btn btn-secondary">Cancel</a>
   </form>
 
 

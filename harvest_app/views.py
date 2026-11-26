@@ -319,11 +319,18 @@ class HarvestArchiveCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
+class HarvestArchiveDeleteView(LoginRequiredMixin, DeleteView):
+    model = HarvestArchive
+    context_object_name = "harvest_archive"
+    template_name = "harvest_app/harvest_archive_confirm_delete.html"
+    success_url = "harvests/archive/"
+
+
 class HarvestArchiveUpdateView(LoginRequiredMixin, UpdateView):
     model = HarvestArchive
     context_object_name = "harvest_archive"
     fields = ["tons_harvested"]
-    template_name = "harvest_app/harvest_update_form.html"
+    template_name = "harvest_app/harvest_archive_update_form.html"
 
     def get_success_url(self):
         return reverse(

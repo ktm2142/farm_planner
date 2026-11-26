@@ -1042,6 +1042,92 @@ class TestHarvestArchiveCreateView(BaseAuthenticatedTestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class TestHarvestArchiveUpdateView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.harvest_archive = HarvestArchive.objects.create(
+            start_date="2027-07-08 08:00:00",
+            field_name="Test field 99",
+            crop_name="Beats",
+            storage_name="Storage",
+            vehicles_info=[
+                {
+                    "vehicle_type": "tractor",
+                    "vehicle_model": "t-150",
+                    "vehicle_license_plate": "BG732NM",
+                    "driver_first_name": "John",
+                    "driver_last_name": "Doe",
+                    "driver_phone_number": +123456743543
+                },
+                {
+                    "vehicle_type": "truck",
+                    "vehicle_model": "Scania",
+                    "vehicle_license_plate": "S4353G",
+                    "driver_first_name": "Grzegorz",
+                    "driver_last_name": "Brzęczyszczykiewicz",
+                    "driver_phone_number": +555275634434
+                }
+            ],
+            end_date="2027-07-15 15:12:00",
+            tons_harvested=15000
+        )
+        self.url = reverse(
+            "harvest_app:harvest-archive-update-tons",
+            kwargs={"pk": self.harvest_archive.pk}
+        )
+
+    def test_harvest_archive_update_tons(self):
+        new_tons = 20000
+        response = self.client.post(self.url, {
+            "tons_harvested": new_tons,
+        })
+        self.assertEqual(response.status_code, 302)
+        self.harvest_archive.refresh_from_db()
+        self.assertEqual(self.harvest_archive.tons_harvested, new_tons)
+
+
+class TestHarvestArchiveDeleteView(BaseAuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.harvest_archive = HarvestArchive.objects.create(
+            start_date="2027-07-08 08:00:00",
+            field_name="Test field 99",
+            crop_name="Beats",
+            storage_name="Storage",
+            vehicles_info=[
+                {
+                    "vehicle_type": "tractor",
+                    "vehicle_model": "t-150",
+                    "vehicle_license_plate": "BG732NM",
+                    "driver_first_name": "John",
+                    "driver_last_name": "Doe",
+                    "driver_phone_number": +123456743543
+                },
+                {
+                    "vehicle_type": "truck",
+                    "vehicle_model": "Scania",
+                    "vehicle_license_plate": "S4353G",
+                    "driver_first_name": "Grzegorz",
+                    "driver_last_name": "Brzęczyszczykiewicz",
+                    "driver_phone_number": +555275634434
+                }
+            ],
+            end_date="2027-07-15 15:12:00",
+            tons_harvested=15000
+        )
+        self.url = reverse(
+            "harvest_app:harvest-archive-delete",
+            kwargs={"pk": self.harvest_archive.pk}
+        )
+
+    def test_harvest_archive_delete(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            HarvestArchive.objects.filter(pk=self.harvest_archive.pk).exists()
+        )
+
+
 class TestHarvestArchiveDetailsView(BaseAuthenticatedTestCase):
     def setUp(self):
         super().setUp()
