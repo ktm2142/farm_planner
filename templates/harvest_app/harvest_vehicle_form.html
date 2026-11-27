@@ -2,11 +2,27 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <h1>Add vehicle to harvest</h1>
+  <h1>
+    {% if harvestvehicle %}
+      Update vehicle on this harvest
+    {% else %}
+      Add vehicle to harvest
+    {% endif %}
+  </h1>
   <form action="" method="post" novalidate>
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Save</button>
-    <button type="submit" name="action" value="save_and_add" class="btn btn-secondary">Save and add another</button>
+    <button
+        type="submit"
+        name="action"
+        value="save_and_add"
+        class="btn btn-primary">
+      Save and add another
+    </button>
+      <a href="{% url "harvest_app:harvest-detail" form.harvest.pk %}"
+         class="btn btn-secondary">
+        Cancel
+      </a>
   </form>
 {% endblock %}
