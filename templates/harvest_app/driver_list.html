@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div>
+  <a href={% url "harvest_app:driver-create" %}>Add driver</a>
+  <div>
     {% if driver_list %}
-    	<ul>
-      {% for driver in driver_list %}
-      	<li>{{ driver.last_name }}</li>
-      	<li>{{ driver.phone_number }}</li>
-        <a href="{% url "harvest_app:driver-detail" driver.pk %}" class="btn btn-primary">Details</a>
-        <hr>
-      {% endfor %}
+      <ul>
+        {% for driver in driver_list %}
+          <li>{{ driver.last_name }}</li>
+          <li>{{ driver.phone_number }}</li>
+          <a href="{% url "harvest_app:driver-detail" driver.pk %}" class="btn btn-primary">Details</a>
+          <hr>
+        {% endfor %}
       </ul>
     {% endif %}
   </div>

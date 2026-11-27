@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <a href={% url "harvest_app:trailer-create" %}>Add trailer</a>
   <div>
     {% if trailer_list %}
       <ul>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <a href={% url "harvest_app:crop-create" %}>Add crop</a>
   <div>
     {% if crop_list %}
       <ul>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <a href={% url "harvest_app:vehicle-create" %}>Add vehicle</a>
   <div>
     {% if vehicle_list %}
       <ul>

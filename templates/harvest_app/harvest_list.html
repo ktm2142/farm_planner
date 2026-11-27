@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <a href={% url "harvest_app:harvest-create" %}>Create harvest</a>
   <div>
     {% if harvest_list %}
       <ul>
@@ -8,20 +9,6 @@
           <li>Starting date: {{ harvest.start_date }}</li>
           <li>Current status: {{ harvest.get_status_display }}</li>
           <li>Field: {{ harvest.field }}</li>
-{#          <ul>#}
-{#            {% for assignment in harvest.assignments.all %}#}
-{#              <li>Vehicle: {{ assignment.vehicle.get_vehicle_type_display }}</li>#}
-{#              <li>Model: {{ assignment.vehicle.model }}</li>#}
-{#              <li>License plate: {{ assignment.vehicle.license_plate }}</li>#}
-{#              <li>Driver: {{ assignment.driver.last_name }}</li>#}
-{#              {% if assignment.trailer %}#}
-{#                <li>Trailer: {{ assignment.trailer.get_trailer_type_display }}</li>#}
-{#                <li>Trailer license plate: {{ assignment.trailer.license_plate }}</li>#}
-{#              {% endif %}#}
-{#              <hr>#}
-{#            {% endfor %}#}
-{##}
-{#          </ul>#}
           <a href="{% url "harvest_app:harvest-detail" harvest.pk %}" class="btn btn-primary">Details</a>
           <hr>
         {% endfor %}

@@ -34,8 +34,10 @@
       <hr>
     {% endfor %}
   </ul>
-  <a href="{% url "harvest_app:harvest-archive-delete" harvest_archive.pk %}" class="btn btn-primary">Delete from
-    archive</a>
+  <a href="{% url "harvest_app:harvest-archive-delete" harvest_archive.pk %}"
+     class="btn btn-primary">
+    Delete from archive
+  </a>
   <a href="{% url "harvest_app:harvest-archive-list" %}" class="btn btn-secondary">Back</a>
 
 
